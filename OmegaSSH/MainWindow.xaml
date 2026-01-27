@@ -79,7 +79,7 @@
                                     <TreeView.Resources>
                                         <HierarchicalDataTemplate DataType="{x:Type vm:SessionTreeItemViewModel}" ItemsSource="{Binding Children}">
                                             <StackPanel Orientation="Horizontal">
-                                                <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource CyberYellow}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource CyberYellowBrush}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                                 <fa:ImageAwesome Icon="Server" Width="12" Foreground="{StaticResource CyberCyanBrush}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
                                                 <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextBrush}"/>
                                             </StackPanel>

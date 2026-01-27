@@ -42,7 +42,7 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Icon -->
-                        <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource CyberYellow}" VerticalAlignment="Center" Visibility="Collapsed" x:Name="FolderIcon"/>
+                        <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource CyberYellowBrush}" VerticalAlignment="Center" Visibility="Collapsed" x:Name="FolderIcon"/>
                         <fa:ImageAwesome Icon="FileOutline" Width="12" Foreground="{StaticResource TextDimBrush}" VerticalAlignment="Center" x:Name="FileIcon"/>
 
                         <!-- Name -->

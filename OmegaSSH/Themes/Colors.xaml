@@ -31,5 +31,6 @@
     
     <SolidColorBrush x:Key="CyberCyanBrush" Color="{StaticResource CyberCyan}"/>
     <SolidColorBrush x:Key="CyberMagentaBrush" Color="{StaticResource CyberMagenta}"/>
+    <SolidColorBrush x:Key="CyberYellowBrush" Color="{StaticResource CyberYellow}"/>
     
 </ResourceDictionary>

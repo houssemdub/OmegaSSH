@@ -28,7 +28,7 @@ public partial class App : Application
             string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OmegaSSH");
             if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
             string path = Path.Combine(appData, "boot.log");
-            File.AppendAllText(path, $"[{DateTime.Now}] {message}\r\n");
+            File.AppendAllText(path, $"[{DateTime.Now:HH:mm:ss.fff}] {message}\r\n");
         }
         catch { }
     }
@@ -66,52 +66,60 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-        Log("OnStartup - Starting boot sequence");
+        Log("===== BOOT SEQUENCE START =====");
+
+        // Global Error Handling - The "Black Box"
+        AppDomain.CurrentDomain.UnhandledException += (s, ev) => {
+            Log("!!! FATAL DOMAIN EXCEPTION !!!");
+            HandleFatalError(ev.ExceptionObject as Exception);
+        };
+        DispatcherUnhandledException += (s, ev) => {
+            Log("!!! UI DISPATCHER EXCEPTION !!!");
+            HandleFatalError(ev.Exception);
+            ev.Handled = true;
+        };
+        TaskScheduler.UnobservedTaskException += (s, ev) => {
+            Log("!!! UNOBSERVED TASK EXCEPTION !!!");
+            HandleFatalError(ev.Exception);
+            ev.SetObserved();
+        };
 
         try 
         {
-            // 0. Init DI
+            Log("Step 0: Init DI");
             InitDI();
 
-            // Global Error Handling
-            AppDomain.CurrentDomain.UnhandledException += (s, ev) => HandleFatalError(ev.ExceptionObject as Exception);
-            DispatcherUnhandledException += (s, ev) => { HandleFatalError(ev.Exception); ev.Handled = true; };
-
-            // 1. Show Splash Screen (Blocks until it closes)
-            Log("OnStartup - Showing Splash");
+            Log("Step 1: Showing Splash");
             var splash = new OmegaSSH.Views.SplashWindow();
             bool? result = splash.ShowDialog();
-            Log($"OnStartup - Splash terminated with result: {result}");
+            Log($"Step 1 Complete: Splash result = {result}");
 
             if (result == true)
             {
-                // 2. Setup Main Window
-                Log("OnStartup - Initializing MainWindow");
+                Log("Step 2: Initializing MainWindow");
                 var settingsService = ServiceProvider.GetRequiredService<ISettingsService>();
                 var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
                 
-                // Restore settings
+                Log("Step 3: Loading Window Dimensions");
                 mainWindow.Width = settingsService.Settings.WindowWidth > 100 ? settingsService.Settings.WindowWidth : 1100;
                 mainWindow.Height = settingsService.Settings.WindowHeight > 100 ? settingsService.Settings.WindowHeight : 700;
                 
-                Log("OnStartup - Displaying MainWindow");
+                Log("Step 4: Executing MainWindow.Show()");
                 mainWindow.Show();
                 
-                // Allow exit when main window closes
                 this.ShutdownMode = ShutdownMode.OnMainWindowClose;
+                Log("===== BOOT SEQUENCE SUCCESS =====");
             }
             else
             {
-                Log("OnStartup - Splash closed without success result, shutting down.");
+                Log("Boot Cancelled: Splash closed without success.");
                 Application.Current.Shutdown();
             }
         }
         catch (Exception ex)
         {
-            string error = $"CRITICAL BOOT ERROR: {ex.Message}\n{ex.StackTrace}";
-            Log(error);
-            MessageBox.Show(error, "OmegaSSH - Critical Boot Failure", MessageBoxButton.OK, MessageBoxImage.Error);
-            Application.Current.Shutdown();
+            Log($"!!! BOOT CRASH !!! {ex.Message}\n{ex.StackTrace}");
+            HandleFatalError(ex);
         }
     }
 
@@ -119,18 +127,33 @@ public partial class App : Application
     {
         if (ex == null) return;
         
-        // Log to file for debugging the "closing by itself" issue
+        string errorLog = $"TIME: {DateTime.Now}\nMESSAGE: {ex.Message}\nSTACK: {ex.StackTrace}\n";
+        if (ex.InnerException != null)
+        {
+            errorLog += $"INNER: {ex.InnerException.Message}\nINNER STACK: {ex.InnerException.StackTrace}\n";
+        }
+        
+        Log($"FATAL ERROR LOGGED:\n{errorLog}");
+
+        // Log to crash.log as well
         try
         {
             string logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OmegaSSH", "crash.log");
-            File.AppendAllText(logPath, $"\n[{DateTime.Now}] CRASH: {ex.Message}\n{ex.StackTrace}\n");
+            File.AppendAllText(logPath, $"[{DateTime.Now}] FATAL: {ex.Message}\n{ex.StackTrace}\n");
         }
         catch { }
 
-        OmegaSSH.Views.NotificationWindow.Show($"The system encountered a fatal error:\n{ex.Message}", "SYSTEM FAILURE", true);
-        
-        // If it's early in startup, we must shutdown
-        // Application.Current.Shutdown(); 
+        // Using standard MessageBox here because NotificationWindow might fail if UI is broken
+        MessageBox.Show(
+            $"OMEGASSH CRITICAL ERROR\n\n" +
+            $"The app will now close to prevent data corruption.\n\n" +
+            $"Error: {ex.Message}\n\n" +
+            $"Check %AppData%\\OmegaSSH\\boot.log for details.", 
+            "Neural Link Failure", 
+            MessageBoxButton.OK, 
+            MessageBoxImage.Error);
+
+        Application.Current.Shutdown(); 
     }
 }
 
