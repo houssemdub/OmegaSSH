@@ -1,0 +1,32 @@
+# Visual Studio / .NET Core
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build Results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+
+# OmegaSSH Local Data
+crash.log
+boot.log
+sessions.json
+settings.json
+vault.bin
+*.key
+*.pub

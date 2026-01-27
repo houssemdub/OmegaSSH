@@ -1,0 +1,73 @@
+<UserControl x:Class="OmegaSSH.Views.SftpView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OmegaSSH.Views"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="300">
+    <Grid Background="{StaticResource SidebarBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- SFTP Header / Toolbar -->
+        <Border Padding="10" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding CurrentPath}" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextDimBrush}" TextTrimming="CharacterEllipsis" ToolTip="{Binding CurrentPath}"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
+                    <Button Style="{StaticResource IconButton}" Command="{Binding RefreshCommand}" ToolTip="Refresh">
+                        <fa:ImageAwesome Icon="Refresh" Width="10" Foreground="{StaticResource TextDimBrush}"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- File List -->
+        <ListBox Grid.Row="1" ItemsSource="{Binding Entries}" BorderThickness="0" Background="Transparent" 
+                 x:Name="FilesList" d:ItemsSource="{d:SampleData ItemCount=5}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid x:Name="ItemGrid" Background="Transparent" VerticalAlignment="Center" Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Icon -->
+                        <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource CyberYellow}" VerticalAlignment="Center" Visibility="Collapsed" x:Name="FolderIcon"/>
+                        <fa:ImageAwesome Icon="FileOutline" Width="12" Foreground="{StaticResource TextDimBrush}" VerticalAlignment="Center" x:Name="FileIcon"/>
+
+                        <!-- Name -->
+                        <TextBlock Grid.Column="1" Text="{Binding Name}" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="5,0" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                        
+                        <!-- Size -->
+                        <TextBlock Grid.Column="2" Text="{Binding Size}" Foreground="{StaticResource TextDimBrush}" FontSize="10" VerticalAlignment="Center"/>
+                    </Grid>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsDirectory}" Value="True">
+                            <Setter TargetName="FolderIcon" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="FileIcon" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="ItemGrid" Property="Cursor" Value="Hand"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding NavigateCommand}" 
+                              CommandParameter="{Binding ElementName=FilesList, Path=SelectedItem}"/>
+            </ListBox.InputBindings>
+        </ListBox>
+
+        <ProgressBar Grid.Row="1" VerticalAlignment="Top" Height="2" IsIndeterminate="True" 
+                     Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                     Foreground="{StaticResource CyberCyanBrush}" Background="Transparent" BorderThickness="0"/>
+    </Grid>
+</UserControl>

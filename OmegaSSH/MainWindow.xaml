@@ -1,0 +1,261 @@
+﻿<Window x:Class="OmegaSSH.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:local="clr-namespace:OmegaSSH"
+        xmlns:views="clr-namespace:OmegaSSH.Views"
+        xmlns:vm="clr-namespace:OmegaSSH.ViewModels"
+        mc:Ignorable="d"
+        Title="OmegaSSH" Height="700" Width="1100"
+        Background="{StaticResource BgBrush}"
+        Foreground="{StaticResource TextBrush}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="40" GlassFrameThickness="0" CornerRadius="0" ResizeBorderThickness="8"/>
+    </WindowChrome.WindowChrome>
+
+    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Background="{StaticResource BgBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/> <!-- Title Bar -->
+                <RowDefinition Height="*"/>   <!-- Content -->
+                <RowDefinition Height="25"/> <!-- Status Bar -->
+            </Grid.RowDefinitions>
+
+            <!-- Custom Title Bar -->
+            <Grid Grid.Row="0" Background="{StaticResource SidebarBrush}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0">
+                    <fa:ImageAwesome Icon="Terminal" Width="16" Foreground="{StaticResource CyberCyanBrush}" Margin="0,0,10,0"/>
+                    <TextBlock Text="OMEGA SSH" FontFamily="Consolas" FontWeight="Bold" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" Click="Minimize_Click"/>
+                    <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" Click="Maximize_Click"/>
+                    <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" Background="#22FF0000" Click="Close_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Main Layout -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="260"/> <!-- Sidebar Sessions -->
+                    <ColumnDefinition Width="*"/>   <!-- Main Content (Terminals/Tools) -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Sidebar -->
+                <Border Grid.Column="0" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Search Box -->
+                        <Border Padding="15">
+                            <Grid>
+                                <TextBox Style="{StaticResource ModernTextBox}" x:Name="SearchBox" Tag="Search sessions..." />
+                                <fa:ImageAwesome Icon="Search" Width="12" Foreground="{StaticResource TextDimBrush}" HorizontalAlignment="Right" Margin="0,0,10,0" IsHitTestVisible="False"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Session Tree -->
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="10,0">
+                                <Grid>
+                                    <TextBlock Text="SESSIONS" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="5,10" FontWeight="Bold"/>
+                                    <Button Style="{StaticResource IconButton}" Command="{Binding CreateTestSessionCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="Add Test Session">
+                                        <fa:ImageAwesome Icon="Plus" Width="10" Foreground="{StaticResource TextDimBrush}"/>
+                                    </Button>
+                                </Grid>
+                                
+                                <TreeView ItemsSource="{Binding SessionTree}" Background="Transparent" BorderThickness="0" x:Name="SessionTreeView">
+                                    <TreeView.Resources>
+                                        <HierarchicalDataTemplate DataType="{x:Type vm:SessionTreeItemViewModel}" ItemsSource="{Binding Children}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource CyberYellow}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <fa:ImageAwesome Icon="Server" Width="12" Foreground="{StaticResource CyberCyanBrush}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                                <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextBrush}"/>
+                                            </StackPanel>
+                                        </HierarchicalDataTemplate>
+                                    </TreeView.Resources>
+                                    <TreeView.ItemContainerStyle>
+                                        <Style TargetType="TreeViewItem">
+                                            <EventSetter Event="MouseDoubleClick" Handler="SessionTreeItem_DoubleClick"/>
+                                            <Setter Property="IsExpanded" Value="True"/>
+                                        </Style>
+                                    </TreeView.ItemContainerStyle>
+                                </TreeView>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- Sidebar Tools -->
+                        <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10">
+                            <StackPanel>
+                                <Button Style="{StaticResource IconButton}" HorizontalAlignment="Left" Margin="5" ToolTip="Key Manager" Command="{Binding OpenKeyManagerCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Key" Width="14" Foreground="{StaticResource TextDimBrush}" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Key Manager" VerticalAlignment="Center" Foreground="{StaticResource TextDimBrush}"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource IconButton}" HorizontalAlignment="Left" Margin="5" ToolTip="Settings">
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Gear" Width="14" Foreground="{StaticResource TextDimBrush}" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Settings" VerticalAlignment="Center" Foreground="{StaticResource TextDimBrush}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <StackPanel Orientation="Horizontal" Margin="5,10,0,0">
+                                    <Button Width="16" Height="16" Background="#00FFFF" Margin="0,0,10,0" ToolTip="Cyberpunk" Command="{Binding ChangeThemeCommand}" CommandParameter="cyberpunk" Style="{StaticResource RoundThemeButton}"/>
+                                    <Button Width="16" Height="16" Background="#00FF00" Margin="0,0,10,0" ToolTip="Retro" Command="{Binding ChangeThemeCommand}" CommandParameter="retro" Style="{StaticResource RoundThemeButton}"/>
+                                    <Button Width="16" Height="16" Background="#88C0D0" Margin="0,0,10,0" ToolTip="Nord" Command="{Binding ChangeThemeCommand}" CommandParameter="nord" Style="{StaticResource RoundThemeButton}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Main Content Area -->
+                <Grid Grid.Column="1">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" From="20" To="0" Duration="0:0:0.5">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <DataTrigger Binding="{Binding IsKeyManagerActive}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsKeyManagerActive}" Value="False">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RenderTransform>
+                        <TranslateTransform/>
+                    </Grid.RenderTransform>
+                    <!-- Tabs View -->
+                    <Grid Visibility="{Binding IsKeyManagerActive, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="180"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Terminal Area -->
+                        <Grid Grid.Column="0">
+                            <TabControl ItemsSource="{Binding TerminalTabs}" SelectedItem="{Binding SelectedTab}" Background="Transparent" BorderThickness="0" Padding="0">
+                                <TabControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <fa:ImageAwesome Icon="Terminal" Width="10" Margin="0,0,5,0" Foreground="{StaticResource CyberCyanBrush}"/>
+                                            <TextBlock Text="{Binding SessionName}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </TabControl.ItemTemplate>
+                                <TabControl.ContentTemplate>
+                                    <DataTemplate>
+                                        <views:TerminalView />
+                                    </DataTemplate>
+                                </TabControl.ContentTemplate>
+                            </TabControl>
+                        </Grid>
+
+                        <!-- Snippets Sidebar -->
+                        <Border Grid.Column="1" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,0,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="SNIPPETS" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="15,15,15,5" FontWeight="Bold"/>
+
+                                <ListBox Grid.Row="1" ItemsSource="{Binding Snippets}" Background="Transparent" BorderThickness="0">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Padding="10" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextBrush}" FontWeight="SemiBold" FontSize="11"/>
+                                                        <TextBlock Text="{Binding Command}" Foreground="{StaticResource TextDimBrush}" FontSize="9" TextTrimming="CharacterEllipsis"/>
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1" Style="{StaticResource IconButton}" 
+                                                            Command="{Binding DataContext.ExecuteSnippetCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}">
+                                                        <fa:ImageAwesome Icon="Play" Width="10" Foreground="{StaticResource CyberMagentaBrush}"/>
+                                                    </Button>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- Key Manager View -->
+                    <Grid Visibility="{Binding IsKeyManagerActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Button Style="{StaticResource IconButton}" Command="{Binding CloseKeyManagerCommand}" HorizontalAlignment="Left" Margin="20,10">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:ImageAwesome Icon="ArrowLeft" Width="12" Foreground="{StaticResource TextDimBrush}" Margin="0,0,10,0"/>
+                                <TextBlock Text="Back to Terminals" Foreground="{StaticResource TextDimBrush}"/>
+                            </StackPanel>
+                        </Button>
+                        <views:KeyManagerView Grid.Row="1" DataContext="{Binding KeyManager}"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <!-- Status Bar -->
+            <Border Grid.Row="2" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+                <Grid Margin="10,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="8" Height="8" Fill="#00FF00" Margin="0,0,5,0"/>
+                        <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="SSH: AES-256" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextDimBrush}" Margin="10,0"/>
+                        <TextBlock Text="UTF-8" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>
