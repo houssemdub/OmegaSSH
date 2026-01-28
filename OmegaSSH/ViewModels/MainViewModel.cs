@@ -130,7 +130,8 @@ public partial class MainViewModel : ObservableObject
     private void ConnectToSession(SessionModel session)
     {
         var sshService = _serviceProvider.GetRequiredService<ISshService>();
-        var terminalVM = new TerminalViewModel(sshService, session);
+        var sessionLogger = _serviceProvider.GetRequiredService<ISessionLogger>();
+        var terminalVM = new TerminalViewModel(sshService, sessionLogger, session);
         TerminalTabs.Add(terminalVM);
         SelectedTab = terminalVM;
         StatusText = $"Connected to {session.Name}";

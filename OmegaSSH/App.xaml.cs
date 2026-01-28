@@ -14,6 +14,7 @@ public partial class App : Application
 {
     public new static App Current => (App)Application.Current;
     public IServiceProvider ServiceProvider { get; private set; }
+    private bool _isHandlingFatalError = false;
 
     public App()
     {
@@ -61,6 +62,7 @@ public partial class App : Application
         services.AddSingleton<ISnippetService, SnippetService>();
         services.AddSingleton<IKeyService, KeyService>();
         services.AddSingleton<IThemeService, ThemeService>();
+        services.AddTransient<ISessionLogger, SessionLogger>();
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -125,7 +127,8 @@ public partial class App : Application
 
     private void HandleFatalError(Exception? ex)
     {
-        if (ex == null) return;
+        if (ex == null || _isHandlingFatalError) return;
+        _isHandlingFatalError = true;
         
         string errorLog = $"TIME: {DateTime.Now}\nMESSAGE: {ex.Message}\nSTACK: {ex.StackTrace}\n";
         if (ex.InnerException != null)

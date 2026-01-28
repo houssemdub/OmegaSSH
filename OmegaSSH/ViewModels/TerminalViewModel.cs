@@ -11,6 +11,7 @@ namespace OmegaSSH.ViewModels;
 public partial class TerminalViewModel : ObservableObject, IDisposable
 {
     private readonly ISshService _sshService;
+    private readonly ISessionLogger _logger;
     private readonly StringBuilder _outputBuffer = new StringBuilder();
     private readonly System.Timers.Timer _updateTimer;
     
@@ -23,12 +24,15 @@ public partial class TerminalViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private SftpViewModel _sftp;
 
-    public TerminalViewModel(ISshService sshService, SessionModel session)
+    public TerminalViewModel(ISshService sshService, ISessionLogger logger, SessionModel session)
     {
         _sshService = sshService;
+        _logger = logger;
         _sessionName = session.Name;
         _sftp = new SftpViewModel(sshService);
         _sshService.DataReceived += OnDataReceived;
+        
+        _logger.Initialize(session.Name);
         
         // Initialize update timer (50ms for smooth updates without freezing)
         _updateTimer = new System.Timers.Timer(50);
@@ -51,6 +55,9 @@ public partial class TerminalViewModel : ObservableObject, IDisposable
 
         // Notify the view (ANSI Parser)
         DataReceived?.Invoke(dataToProcess);
+        
+        // Log to file
+        _logger.Log(dataToProcess);
 
         // Update the string property for backup/history (limited)
         App.Current.Dispatcher.BeginInvoke(new Action(() =>
@@ -96,6 +103,7 @@ public partial class TerminalViewModel : ObservableObject, IDisposable
     {
         _updateTimer?.Stop();
         _updateTimer?.Dispose();
+        _logger?.Dispose();
         _sshService.DataReceived -= OnDataReceived;
         _sshService.Dispose();
     }
