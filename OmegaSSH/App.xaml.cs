@@ -152,7 +152,7 @@ public partial class App : Application
             $"The app will now close to prevent data corruption.\n\n" +
             $"Error: {ex.Message}\n\n" +
             $"Check %AppData%\\OmegaSSH\\boot.log for details.", 
-            "Neural Link Failure", 
+            "System Error", 
             MessageBoxButton.OK, 
             MessageBoxImage.Error);
 

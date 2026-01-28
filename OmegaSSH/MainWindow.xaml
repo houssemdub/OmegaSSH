@@ -31,7 +31,7 @@
             <!-- Custom Title Bar -->
             <Grid Grid.Row="0" Background="{StaticResource SidebarBrush}">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0">
-                    <fa:ImageAwesome Icon="Terminal" Width="16" Foreground="{StaticResource CyberCyanBrush}" Margin="0,0,10,0"/>
+                    <fa:ImageAwesome Icon="Terminal" Width="16" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,10,0"/>
                     <TextBlock Text="OMEGA SSH" FontFamily="Consolas" FontWeight="Bold" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -45,7 +45,8 @@
             <!-- Main Layout -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="260"/> <!-- Sidebar Sessions -->
+                    <ColumnDefinition Width="260" MinWidth="200" MaxWidth="500"/> <!-- Sidebar Sessions -->
+                    <ColumnDefinition Width="Auto"/> <!-- Splitter -->
                     <ColumnDefinition Width="*"/>   <!-- Main Content (Terminals/Tools) -->
                 </Grid.ColumnDefinitions>
 
@@ -84,8 +85,8 @@
                                         
                                         <HierarchicalDataTemplate DataType="{x:Type vm:SessionTreeItemViewModel}" ItemsSource="{Binding Children}">
                                             <StackPanel Orientation="Horizontal">
-                                                <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource CyberYellowBrush}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                                <fa:ImageAwesome Icon="Server" Width="12" Foreground="{StaticResource CyberCyanBrush}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                                <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource HighlightAccentBrush}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <fa:ImageAwesome Icon="Server" Width="12" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
                                                 <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextBrush}"/>
                                             </StackPanel>
                                         </HierarchicalDataTemplate>
@@ -123,31 +124,34 @@
                         <!-- Sidebar Tools -->
                         <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10">
                             <StackPanel>
-                                <Button Style="{StaticResource IconButton}" HorizontalAlignment="Left" Margin="5" ToolTip="Key Manager" Command="{Binding OpenKeyManagerCommand}">
+                                <Button Content="NEW CONNECTION" Command="{Binding CreateTestSessionCommand}" 
+                                        Style="{StaticResource ModernButton}" Margin="0,0,0,10"/>
+                                
+                                <Grid>
                                     <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Key" Width="14" Foreground="{StaticResource TextDimBrush}" Margin="0,0,10,0"/>
-                                        <TextBlock Text="Key Manager" VerticalAlignment="Center" Foreground="{StaticResource TextDimBrush}"/>
+                                        <Button Style="{StaticResource IconButton}" Command="{Binding OpenKeyManagerCommand}" ToolTip="Key Manager">
+                                            <fa:ImageAwesome Icon="Key" Width="12" Foreground="{StaticResource TextDimBrush}"/>
+                                        </Button>
+                                        <Button Style="{StaticResource IconButton}" ToolTip="Settings" Margin="5,0,0,0">
+                                            <fa:ImageAwesome Icon="Gear" Width="12" Foreground="{StaticResource TextDimBrush}"/>
+                                        </Button>
                                     </StackPanel>
-                                </Button>
-                                <Button Style="{StaticResource IconButton}" HorizontalAlignment="Left" Margin="5" ToolTip="Settings">
-                                    <StackPanel Orientation="Horizontal">
-                                        <fa:ImageAwesome Icon="Gear" Width="14" Foreground="{StaticResource TextDimBrush}" Margin="0,0,10,0"/>
-                                        <TextBlock Text="Settings" VerticalAlignment="Center" Foreground="{StaticResource TextDimBrush}"/>
-                                    </StackPanel>
-                                </Button>
 
-                                <StackPanel Orientation="Horizontal" Margin="5,10,0,0">
-                                    <Button Width="16" Height="16" Background="#00FFFF" Margin="0,0,10,0" ToolTip="Cyberpunk" Command="{Binding ChangeThemeCommand}" CommandParameter="cyberpunk" Style="{StaticResource RoundThemeButton}"/>
-                                    <Button Width="16" Height="16" Background="#00FF00" Margin="0,0,10,0" ToolTip="Retro" Command="{Binding ChangeThemeCommand}" CommandParameter="retro" Style="{StaticResource RoundThemeButton}"/>
-                                    <Button Width="16" Height="16" Background="#88C0D0" Margin="0,0,10,0" ToolTip="Nord" Command="{Binding ChangeThemeCommand}" CommandParameter="nord" Style="{StaticResource RoundThemeButton}"/>
-                                </StackPanel>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Width="12" Height="12" Background="#22FFFFFF" ToolTip="Classic" Command="{Binding ChangeThemeCommand}" CommandParameter="default" Style="{StaticResource RoundThemeButton}"/>
+                                    </StackPanel>
+                                </Grid>
                             </StackPanel>
                         </Border>
                     </Grid>
                 </Border>
 
+                <!-- Grid Splitter -->
+                <GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" 
+                              Background="{StaticResource BorderBrush}"/>
+
                 <!-- Main Content Area -->
-                <Grid Grid.Column="1">
+                <Grid Grid.Column="2">
                     <Grid.Style>
                         <Style TargetType="Grid">
                             <Style.Triggers>
@@ -200,7 +204,7 @@
                                 <TabControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <fa:ImageAwesome Icon="Terminal" Width="10" Margin="0,0,5,0" Foreground="{StaticResource CyberCyanBrush}"/>
+                                            <fa:ImageAwesome Icon="Terminal" Width="10" Margin="0,0,5,0" Foreground="{StaticResource PrimaryAccentBrush}"/>
                                             <TextBlock Text="{Binding SessionName}"/>
                                         </StackPanel>
                                     </DataTemplate>
@@ -239,7 +243,7 @@
                                                     <Button Grid.Column="1" Style="{StaticResource IconButton}" 
                                                             Command="{Binding DataContext.ExecuteSnippetCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                             CommandParameter="{Binding}">
-                                                        <fa:ImageAwesome Icon="Play" Width="10" Foreground="{StaticResource CyberMagentaBrush}"/>
+                                                        <fa:ImageAwesome Icon="Play" Width="10" Foreground="{StaticResource SecondaryAccentBrush}"/>
                                                     </Button>
                                                 </Grid>
                                             </Border>

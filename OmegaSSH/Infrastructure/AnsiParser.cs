@@ -26,7 +26,7 @@ public class AnsiParser
             try
             {
                 var document = richTextBox.Document;
-                Paragraph paragraph = document.Blocks.LastBlock as Paragraph;
+                Paragraph? paragraph = document.Blocks.LastBlock as Paragraph;
                 
                 if (paragraph == null)
                 {

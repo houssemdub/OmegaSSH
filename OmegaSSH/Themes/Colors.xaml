@@ -10,15 +10,16 @@
     <Color x:Key="TextColor">#C9D1D9</Color>
     <Color x:Key="TextDimColor">#8B949E</Color>
     
-    <!-- Neon Cyberpunk Accents -->
-    <Color x:Key="CyberCyan">#00F2FF</Color>
-    <Color x:Key="CyberMagenta">#FF00E5</Color>
-    <Color x:Key="CyberYellow">#FDF500</Color>
+    <!-- App Accents -->
+    <Color x:Key="PrimaryAccent">#58A6FF</Color>
+    <Color x:Key="SecondaryAccent">#FF00E5</Color>
+    <Color x:Key="HighlightAccent">#FDF500</Color>
     
     <!-- Brushes -->
     <SolidColorBrush x:Key="BgBrush" Color="{StaticResource BgColor}"/>
     <SolidColorBrush x:Key="SidebarBrush" Color="{StaticResource SidebarColor}"/>
     <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="PrimaryAccentBrush" Color="{StaticResource PrimaryAccent}"/>
     <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
     <SolidColorBrush x:Key="TextBrush" Color="{StaticResource TextColor}"/>
     <SolidColorBrush x:Key="TextDimBrush" Color="{StaticResource TextDimColor}"/>
@@ -29,8 +30,7 @@
         <GradientStop Color="#08FFFFFF" Offset="1"/>
     </LinearGradientBrush>
     
-    <SolidColorBrush x:Key="CyberCyanBrush" Color="{StaticResource CyberCyan}"/>
-    <SolidColorBrush x:Key="CyberMagentaBrush" Color="{StaticResource CyberMagenta}"/>
-    <SolidColorBrush x:Key="CyberYellowBrush" Color="{StaticResource CyberYellow}"/>
+    <SolidColorBrush x:Key="SecondaryAccentBrush" Color="{StaticResource SecondaryAccent}"/>
+    <SolidColorBrush x:Key="HighlightAccentBrush" Color="{StaticResource HighlightAccent}"/>
     
 </ResourceDictionary>

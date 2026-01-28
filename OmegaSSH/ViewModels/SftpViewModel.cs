@@ -55,16 +55,22 @@ public partial class SftpViewModel : ObservableObject
 
         if (entry.Name == "..")
         {
-            // Simple parent dir logic
-            var parts = CurrentPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length > 0)
+            if (CurrentPath == "/" || CurrentPath == ".")
             {
-                CurrentPath = "/" + string.Join("/", parts.Take(parts.Length - 1));
-                if (CurrentPath == "") CurrentPath = "/";
+                CurrentPath = "/";
             }
             else
             {
-                CurrentPath = "/";
+                var normalized = CurrentPath.TrimEnd('/');
+                var lastSlash = normalized.LastIndexOf('/');
+                if (lastSlash > 0)
+                {
+                    CurrentPath = normalized.Substring(0, lastSlash);
+                }
+                else
+                {
+                    CurrentPath = "/";
+                }
             }
         }
         else

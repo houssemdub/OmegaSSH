@@ -18,17 +18,17 @@ public class ThemeService : IThemeService
 
         switch (themeName.ToLower())
         {
-            case "cyberpunk":
+            case "default":
                 colors["BgBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0D1117"));
-                colors["CyberCyanBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00FFFF"));
+                colors["PrimaryAccentBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00FFFF"));
                 break;
             case "retro":
                 colors["BgBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#121212"));
-                colors["CyberCyanBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00FF00"));
+                colors["PrimaryAccentBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00FF00"));
                 break;
             case "nord":
                 colors["BgBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E3440"));
-                colors["CyberCyanBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#88C0D0"));
+                colors["PrimaryAccentBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#88C0D0"));
                 break;
         }
     }

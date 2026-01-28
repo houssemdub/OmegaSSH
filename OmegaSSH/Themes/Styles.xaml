@@ -86,7 +86,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="10,8"/>
-        <Setter Property="CaretBrush" Value="{StaticResource CyberCyanBrush}"/>
+        <Setter Property="CaretBrush" Value="{StaticResource PrimaryAccentBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
@@ -95,7 +95,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource CyberCyanBrush}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryAccentBrush}"/>
                             <Setter TargetName="border" Property="Background" Value="#1AFFFFFF"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -117,7 +117,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="10,8"/>
-        <Setter Property="CaretBrush" Value="{StaticResource CyberCyanBrush}"/>
+        <Setter Property="CaretBrush" Value="{StaticResource PrimaryAccentBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="PasswordBox">
@@ -126,7 +126,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource CyberCyanBrush}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryAccentBrush}"/>
                             <Setter TargetName="border" Property="Background" Value="#1AFFFFFF"/>
                         </Trigger>
                     </ControlTemplate.Triggers>

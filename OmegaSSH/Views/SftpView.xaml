@@ -42,7 +42,7 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Icon -->
-                        <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource CyberYellowBrush}" VerticalAlignment="Center" Visibility="Collapsed" x:Name="FolderIcon"/>
+                        <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource HighlightAccentBrush}" VerticalAlignment="Center" Visibility="Collapsed" x:Name="FolderIcon"/>
                         <fa:ImageAwesome Icon="FileOutline" Width="12" Foreground="{StaticResource TextDimBrush}" VerticalAlignment="Center" x:Name="FileIcon"/>
 
                         <!-- Name -->
@@ -68,6 +68,6 @@
 
         <ProgressBar Grid.Row="1" VerticalAlignment="Top" Height="2" IsIndeterminate="True" 
                      Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                     Foreground="{StaticResource CyberCyanBrush}" Background="Transparent" BorderThickness="0"/>
+                     Foreground="{StaticResource PrimaryAccentBrush}" Background="Transparent" BorderThickness="0"/>
     </Grid>
 </UserControl>
