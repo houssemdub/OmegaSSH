@@ -63,6 +63,16 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void OpenSettings()
+    {
+        var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
+        var themeService = _serviceProvider.GetRequiredService<IThemeService>();
+        var vm = new SettingsViewModel(settingsService, themeService);
+        var win = new OmegaSSH.Views.SettingsWindow(vm) { Owner = System.Windows.Application.Current.MainWindow };
+        win.ShowDialog();
+    }
+
+    [RelayCommand]
     private async Task ChangeTheme(string themeName)
     {
         _themeService.SetTheme(themeName);
@@ -165,7 +175,8 @@ public partial class MainViewModel : ObservableObject
     {
         var sshService = _serviceProvider.GetRequiredService<ISshService>();
         var sessionLogger = _serviceProvider.GetRequiredService<ISessionLogger>();
-        var terminalVM = new TerminalViewModel(sshService, sessionLogger, session);
+        var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
+        var terminalVM = new TerminalViewModel(sshService, sessionLogger, settingsService, session);
         TerminalTabs.Add(terminalVM);
         SelectedTab = terminalVM;
         StatusText = $"Connected to {session.Name}";

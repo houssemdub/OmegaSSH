@@ -12,8 +12,7 @@
         <Style x:Key="TerminalRichTextBox" TargetType="RichTextBox">
             <Setter Property="Background" Value="#050505"/>
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
-            <Setter Property="FontFamily" Value="Consolas"/>
-            <Setter Property="FontSize" Value="14"/>
+            <!-- FontFamily and FontSize will be bound on the control directly -->
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="IsReadOnly" Value="True"/>
             <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
@@ -40,7 +39,9 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <RichTextBox x:Name="OutputBox" Style="{StaticResource TerminalRichTextBox}">
+                <RichTextBox x:Name="OutputBox" Style="{StaticResource TerminalRichTextBox}"
+                             FontFamily="{Binding TerminalFontFamily}" 
+                             FontSize="{Binding TerminalFontSize}">
                     <FlowDocument PagePadding="0"/>
                 </RichTextBox>
 

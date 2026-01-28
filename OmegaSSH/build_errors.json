@@ -1,0 +1,231 @@
+{
+  "$schema": "http://json.schemastore.org/sarif-1.0.0",
+  "version": "1.0.0",
+  "runs": [
+    {
+      "tool": {
+        "name": "Microsoft (R) Visual C# Compiler",
+        "version": "5.0.0.0",
+        "fileVersion": "5.0.0-2.25612.105 (44525024)",
+        "semanticVersion": "5.0.0",
+        "language": "en-US"
+      },
+      "results": [
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'Application' is an ambiguous reference between 'System.Windows.Forms.Application' and 'System.Windows.Application'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/App.xaml.cs",
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 28,
+                  "endLine": 13,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'RichTextBox' is an ambiguous reference between 'System.Windows.Controls.RichTextBox' and 'System.Windows.Forms.RichTextBox'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/Infrastructure/AnsiHelper.cs",
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 39,
+                  "endLine": 16,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'RichTextBox' is an ambiguous reference between 'System.Windows.Controls.RichTextBox' and 'System.Windows.Forms.RichTextBox'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/Infrastructure/AnsiParser.cs",
+                "region": {
+                  "startLine": 19,
+                  "startColumn": 32,
+                  "endLine": 19,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'Brush' is an ambiguous reference between 'System.Drawing.Brush' and 'System.Windows.Media.Brush'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/Infrastructure/AnsiParser.cs",
+                "region": {
+                  "startLine": 85,
+                  "startColumn": 53,
+                  "endLine": 85,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'Brush' is an ambiguous reference between 'System.Drawing.Brush' and 'System.Windows.Media.Brush'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/Infrastructure/AnsiParser.cs",
+                "region": {
+                  "startLine": 85,
+                  "startColumn": 13,
+                  "endLine": 85,
+                  "endColumn": 18
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'Brush' is an ambiguous reference between 'System.Drawing.Brush' and 'System.Windows.Media.Brush'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/Infrastructure/AnsiParser.cs",
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 13,
+                  "endLine": 15,
+                  "endColumn": 18
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'KeyEventArgs' is an ambiguous reference between 'System.Windows.Forms.KeyEventArgs' and 'System.Windows.Input.KeyEventArgs'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/MainWindow.xaml.cs",
+                "region": {
+                  "startLine": 58,
+                  "startColumn": 56,
+                  "endLine": 58,
+                  "endColumn": 68
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'UserControl' is an ambiguous reference between 'System.Windows.Controls.UserControl' and 'System.Windows.Forms.UserControl'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/Views/KeyManagerView.xaml.cs",
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 39,
+                  "endLine": 5,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'UserControl' is an ambiguous reference between 'System.Windows.Controls.UserControl' and 'System.Windows.Forms.UserControl'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/Views/SftpView.xaml.cs",
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 33,
+                  "endLine": 5,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'UserControl' is an ambiguous reference between 'System.Windows.Controls.UserControl' and 'System.Windows.Forms.UserControl'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/Views/TerminalView.xaml.cs",
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 37,
+                  "endLine": 13,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0104",
+          "level": "error",
+          "message": "'KeyEventArgs' is an ambiguous reference between 'System.Windows.Forms.KeyEventArgs' and 'System.Windows.Input.KeyEventArgs'",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/Visual%20Studio%20Projects/C%23/OmegaSSH/OmegaSSH/Views/TerminalView.xaml.cs",
+                "region": {
+                  "startLine": 49,
+                  "startColumn": 56,
+                  "endLine": 49,
+                  "endColumn": 68
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "rules": {
+        "CS0104": {
+          "id": "CS0104",
+          "defaultLevel": "error",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS0104)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry",
+              "NotConfigurable"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

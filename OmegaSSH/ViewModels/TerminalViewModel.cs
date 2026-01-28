@@ -24,12 +24,17 @@ public partial class TerminalViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private SftpViewModel _sftp;
 
-    public TerminalViewModel(ISshService sshService, ISessionLogger logger, SessionModel session)
+    [ObservableProperty] private string _terminalFontFamily;
+    [ObservableProperty] private double _terminalFontSize;
+
+    public TerminalViewModel(ISshService sshService, ISessionLogger logger, ISettingsService settingsService, SessionModel session)
     {
         _sshService = sshService;
         _logger = logger;
         _sessionName = session.Name;
         _sftp = new SftpViewModel(sshService);
+        _terminalFontFamily = settingsService.Settings.TerminalFontFamily;
+        _terminalFontSize = settingsService.Settings.TerminalFontSize;
         _sshService.DataReceived += OnDataReceived;
         
         _logger.Initialize(session.Name);

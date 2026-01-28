@@ -132,7 +132,7 @@
                                         <Button Style="{StaticResource IconButton}" Command="{Binding OpenKeyManagerCommand}" ToolTip="Key Manager">
                                             <fa:ImageAwesome Icon="Key" Width="12" Foreground="{StaticResource TextDimBrush}"/>
                                         </Button>
-                                        <Button Style="{StaticResource IconButton}" ToolTip="Settings" Margin="5,0,0,0">
+                                        <Button Style="{StaticResource IconButton}" Command="{Binding OpenSettingsCommand}" ToolTip="Settings" Margin="5,0,0,0">
                                             <fa:ImageAwesome Icon="Gear" Width="12" Foreground="{StaticResource TextDimBrush}"/>
                                         </Button>
                                     </StackPanel>
