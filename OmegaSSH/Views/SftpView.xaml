@@ -31,7 +31,8 @@
 
         <!-- File List -->
         <ListBox Grid.Row="1" ItemsSource="{Binding Entries}" BorderThickness="0" Background="Transparent" 
-                 x:Name="FilesList" d:ItemsSource="{d:SampleData ItemCount=5}">
+                 x:Name="FilesList" d:ItemsSource="{d:SampleData ItemCount=5}"
+                 AllowDrop="True" Drop="FilesList_Drop" DragOver="FilesList_DragOver">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid x:Name="ItemGrid" Background="Transparent" VerticalAlignment="Center" Margin="0,2">
@@ -62,12 +63,21 @@
             </ListBox.ItemTemplate>
             <ListBox.InputBindings>
                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding NavigateCommand}" 
-                              CommandParameter="{Binding ElementName=FilesList, Path=SelectedItem}"/>
+                               CommandParameter="{Binding ElementName=FilesList, Path=SelectedItem}"/>
             </ListBox.InputBindings>
         </ListBox>
 
         <ProgressBar Grid.Row="1" VerticalAlignment="Top" Height="2" IsIndeterminate="True" 
-                     Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                     Foreground="{StaticResource PrimaryAccentBrush}" Background="Transparent" BorderThickness="0"/>
+                      Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Foreground="{StaticResource PrimaryAccentBrush}" Background="Transparent" BorderThickness="0"/>
+
+        <Border Grid.Row="1" VerticalAlignment="Bottom" Background="{StaticResource SidebarBrush}" 
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10,5"
+                Visibility="{Binding IsTransferring, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel>
+                <TextBlock Text="Transferring files..." FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,0,0,5"/>
+                <ProgressBar Value="{Binding TransferProgress}" Height="4" Foreground="{StaticResource HighlightAccentBrush}" Background="#1AFFFFFF" BorderThickness="0"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

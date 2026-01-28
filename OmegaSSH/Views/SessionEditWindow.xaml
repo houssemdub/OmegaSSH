@@ -33,48 +33,131 @@
             </StackPanel>
 
             <!-- Form -->
-            <ScrollViewer Grid.Row="1">
-                <StackPanel>
-                    <TextBlock Text="Session Name" Style="{StaticResource ModernLabel}"/>
-                    <TextBox Text="{Binding Name}" Style="{StaticResource ModernTextBox}" Tag="e.g. Production Server"/>
+            <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
+                <TabControl.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border Name="Border" Padding="15,8" Margin="0,0,5,0" CornerRadius="5,5,0,0">
+                                        <ContentPresenter ContentSource="Header" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#1AFFFFFF"/>
+                                            <Setter Property="Foreground" Value="{StaticResource PrimaryAccentBrush}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#0DFFFFFF"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
 
-                    <Grid Margin="0,15,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="80"/>
-                        </Grid.ColumnDefinitions>
+                <TabItem Header="General">
+                    <ScrollViewer Margin="0,20,0,0">
                         <StackPanel>
-                            <TextBlock Text="Hostname / IP" Style="{StaticResource ModernLabel}"/>
-                            <TextBox Text="{Binding Host}" Style="{StaticResource ModernTextBox}" Tag="192.168.1.10"/>
+                            <TextBlock Text="Session Name" Style="{StaticResource ModernLabel}"/>
+                            <TextBox Text="{Binding Name}" Style="{StaticResource ModernTextBox}" Tag="e.g. Production Server"/>
+
+                            <Grid Margin="0,15,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="80"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Hostname / IP" Style="{StaticResource ModernLabel}"/>
+                                    <TextBox Text="{Binding Host}" Style="{StaticResource ModernTextBox}" Tag="192.168.1.10"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                    <TextBlock Text="Port" Style="{StaticResource ModernLabel}"/>
+                                    <TextBox Text="{Binding Port}" Style="{StaticResource ModernTextBox}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Text="Folder" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
+                            <TextBox Text="{Binding Folder}" Style="{StaticResource ModernTextBox}" Tag="General"/>
+
+                            <TextBlock Text="Username" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
+                            <TextBox Text="{Binding Username}" Style="{StaticResource ModernTextBox}" Tag="root"/>
+
+                            <TextBlock Text="Password" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
+                            <PasswordBox x:Name="PassBox" Style="{StaticResource ModernPasswordBox}" Tag="Password (stored safely)"/>
+
+                            <TextBlock Text="Private Key (optional)" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding PrivateKeyPath}" Style="{StaticResource ModernTextBox}" IsReadOnly="True" Opacity="0.7"/>
+                                <Button Grid.Column="1" Style="{StaticResource IconButton}" Command="{Binding BrowseKeyCommand}" Margin="5,0,0,0">
+                                    <fa:ImageAwesome Icon="FolderOpen" Width="14" Foreground="{StaticResource TextDimBrush}"/>
+                                </Button>
+                            </Grid>
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                            <TextBlock Text="Port" Style="{StaticResource ModernLabel}"/>
-                            <TextBox Text="{Binding Port}" Style="{StaticResource ModernTextBox}"/>
-                        </StackPanel>
-                    </Grid>
+                    </ScrollViewer>
+                </TabItem>
 
-                    <TextBlock Text="Folder" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
-                    <TextBox Text="{Binding Folder}" Style="{StaticResource ModernTextBox}" Tag="General"/>
+                <TabItem Header="SSH Tunnels">
+                    <Grid Margin="0,20,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Text="Username" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
-                    <TextBox Text="{Binding Username}" Style="{StaticResource ModernTextBox}" Tag="root"/>
-
-                    <TextBlock Text="Password" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
-                    <PasswordBox x:Name="PassBox" Style="{StaticResource ModernPasswordBox}" Tag="Password (stored safely)"/>
-
-                    <TextBlock Text="Private Key (optional)" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox Text="{Binding PrivateKeyPath}" Style="{StaticResource ModernTextBox}" IsReadOnly="True" Opacity="0.7"/>
-                        <Button Grid.Column="1" Style="{StaticResource IconButton}" Command="{Binding BrowseKeyCommand}" Margin="5,0,0,0">
-                            <fa:ImageAwesome Icon="FolderOpen" Width="14" Foreground="{StaticResource TextDimBrush}"/>
+                        <Button Command="{Binding AddTunnelCommand}" Style="{StaticResource ModernButton}" HorizontalAlignment="Right" Margin="0,0,0,10">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:ImageAwesome Icon="Plus" Width="10" Margin="0,0,5,0" Foreground="White" VerticalAlignment="Center"/>
+                                <TextBlock Text="ADD TUNNEL"/>
+                            </StackPanel>
                         </Button>
+
+                        <ListBox Grid.Row="1" ItemsSource="{Binding Tunnels}" Background="Transparent" BorderThickness="0">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#0DFFFFFF" Margin="0,0,0,5" Padding="10" CornerRadius="4">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="L:" Foreground="{StaticResource PrimaryAccentBrush}" FontWeight="Bold"/>
+                                                <TextBox Text="{Binding LocalPort}" Width="50" Margin="5,0,10,0" Style="{StaticResource ModernTextBox}" Padding="2"/>
+                                                <TextBlock Text="→" Foreground="{StaticResource TextDimBrush}"/>
+                                                <TextBox Text="{Binding RemoteHost}" Width="100" Margin="10,0,5,0" Style="{StaticResource ModernTextBox}" Padding="2"/>
+                                                <TextBlock Text=":" Foreground="{StaticResource TextDimBrush}"/>
+                                                <TextBox Text="{Binding RemotePort}" Width="50" Margin="5,0,0,0" Style="{StaticResource ModernTextBox}" Padding="2"/>
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Style="{StaticResource IconButton}" 
+                                                    Command="{Binding DataContext.RemoveTunnelCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                    CommandParameter="{Binding}" Margin="10,0,0,0">
+                                                <fa:ImageAwesome Icon="Trash" Width="12" Foreground="#FF4444"/>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </Grid>
-                </StackPanel>
-            </ScrollViewer>
+                </TabItem>
+
+                <TabItem Header="Advanced">
+                    <StackPanel Margin="0,20,0,0">
+                        <Border Background="#0DFFFFFF" Padding="15" CornerRadius="8">
+                            <StackPanel>
+                                <TextBlock Text="SSH FEATURES" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,0,10"/>
+                                <CheckBox IsChecked="{Binding AgentForwarding}" Content="Enable SSH Agent Forwarding" Foreground="{StaticResource TextBrush}" Margin="0,5,0,0"/>
+                                <TextBlock Text="Allows using your local SSH keys on the remote server." FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="20,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
 
             <!-- Actions -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">

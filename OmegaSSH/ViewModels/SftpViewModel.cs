@@ -22,9 +22,48 @@ public partial class SftpViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLoading;
 
+    [ObservableProperty]
+    private bool _isTransferring;
+
+    [ObservableProperty]
+    private double _transferProgress;
+
     public SftpViewModel(ISshService sshService)
     {
         _sshService = sshService;
+    }
+
+    [RelayCommand]
+    public async Task UploadFilesAsync(string[] filePaths)
+    {
+        if (filePaths == null || filePaths.Length == 0) return;
+
+        IsTransferring = true;
+        TransferProgress = 0;
+        int count = 0;
+
+        try
+        {
+            foreach (var path in filePaths)
+            {
+                if (System.IO.File.Exists(path))
+                {
+                    var remotePath = CurrentPath.TrimEnd('/') + "/" + System.IO.Path.GetFileName(path);
+                    await _sshService.UploadFileAsync(path, remotePath);
+                    count++;
+                    TransferProgress = (double)count / filePaths.Length * 100;
+                }
+            }
+            await RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Windows.MessageBox.Show($"Upload failed: {ex.Message}");
+        }
+        finally
+        {
+            IsTransferring = false;
+        }
     }
 
     [RelayCommand]

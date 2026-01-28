@@ -21,7 +21,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private int _keepAliveInterval;
     [ObservableProperty] private string _sessionLogPath;
 
-    public ObservableCollection<string> Themes { get; } = new() { "default", "retro", "nord" };
+    public ObservableCollection<string> Themes { get; } = new() 
+    { 
+        "default", "dracula", "nord", "monokai", "cyberneon", "solarized", "retro" 
+    };
 
     public SettingsViewModel(ISettingsService settingsService, IThemeService themeService)
     {

@@ -14,6 +14,8 @@ public class SessionModel
     public string? PrivateKeyPath { get; set; }
     public List<string> Tags { get; set; } = new();
     public string? Folder { get; set; }
+    public List<TunnelModel> Tunnels { get; set; } = new();
+    public bool AgentForwarding { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime LastConnected { get; set; }
 }

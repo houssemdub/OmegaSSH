@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using OmegaSSH.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace OmegaSSH.ViewModels;
@@ -16,6 +17,9 @@ public partial class SessionEditViewModel : ObservableObject
     [ObservableProperty] private string _password = string.Empty;
     [ObservableProperty] private string _privateKeyPath = string.Empty;
     [ObservableProperty] private string _folder = "General";
+    [ObservableProperty] private bool _agentForwarding;
+    
+    public ObservableCollection<TunnelModel> Tunnels { get; } = new();
     
     public SessionModel Result { get; private set; }
     public bool IsSaved { get; private set; }
@@ -32,6 +36,8 @@ public partial class SessionEditViewModel : ObservableObject
             Password = session.Password ?? string.Empty;
             PrivateKeyPath = session.PrivateKeyPath ?? string.Empty;
             Folder = session.Folder ?? "General";
+            AgentForwarding = session.AgentForwarding;
+            foreach (var t in session.Tunnels) Tunnels.Add(t);
         }
         else
         {
@@ -55,6 +61,8 @@ public partial class SessionEditViewModel : ObservableObject
         Result.Password = Password;
         Result.PrivateKeyPath = PrivateKeyPath;
         Result.Folder = Folder;
+        Result.AgentForwarding = AgentForwarding;
+        Result.Tunnels = new List<TunnelModel>(Tunnels);
 
         IsSaved = true;
         window.DialogResult = true;
@@ -76,5 +84,16 @@ public partial class SessionEditViewModel : ObservableObject
         {
             PrivateKeyPath = dialog.FileName;
         }
+    }
+    [RelayCommand]
+    private void AddTunnel()
+    {
+        Tunnels.Add(new TunnelModel { LocalPort = 8080, RemoteHost = "localhost", RemotePort = 80, IsEnabled = true });
+    }
+
+    [RelayCommand]
+    private void RemoveTunnel(TunnelModel tunnel)
+    {
+        if (tunnel != null) Tunnels.Remove(tunnel);
     }
 }

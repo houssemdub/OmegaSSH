@@ -15,6 +15,20 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         this.Closing += MainWindow_Closing;
+        this.StateChanged += MainWindow_StateChanged;
+    }
+
+    private void MainWindow_StateChanged(object? sender, EventArgs e)
+    {
+        // Fix border when maximized
+        if (WindowState == WindowState.Maximized)
+        {
+            BorderThickness = new Thickness(8); // Account for resize border
+        }
+        else
+        {
+            BorderThickness = new Thickness(1);
+        }
     }
 
     private async void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -76,6 +90,21 @@ public partial class MainWindow : Window
             if (DataContext is MainViewModel mainVm)
             {
                 mainVm.ConnectToSessionCommand.Execute(vm.Session);
+            }
+        }
+    }
+
+    private void QuickConnectBox_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            var text = QuickConnectBox.Text;
+            if (string.IsNullOrWhiteSpace(text)) return;
+
+            if (DataContext is MainViewModel vm)
+            {
+                vm.QuickConnectCommand.Execute(text);
+                QuickConnectBox.Clear();
             }
         }
     }

@@ -1,6 +1,6 @@
-# ⚡ OmegaSSH v1.1.0-Stable
+# ⚡ OmegaSSH v1.2.0-Alpha
 
-**OmegaSSH** is a high-performance, premium SSH terminal and toolchain built for the modern era. Designed with a clean, professional aesthetic, it combines the power of raw SSH/SFTP with a seamless, resilient user experience.
+**OmegaSSH** is a high-performance, premium SSH terminal and toolchain built for the modern era. Designed with a "Corporate Cyberpunk" aesthetic, it combines the power of raw SSH/SFTP with a seamless, resilient user experience and advanced command orchestration.
 
 ---
 
@@ -8,24 +8,22 @@
 
 ### 🛠️ Integrated Toolchain
 - **Multi-Tab Terminal**: Manage multiple sessions simultaneously with high-speed rendering.
+- **Hybrid Shell Support**: Native integration for local terminals (PowerShell, CMD) alongside SSH.
 - **Integrated SFTP Browser**: Built-in file management with background upload/download capabilities.
-- **Comprehensive Session Manager**: Organize connections into folders, duplicate existing profiles, and search instantly.
+- **Multi-Commander Orchestrator**: Execute commands across multiple sessions in parallel with aggregated output.
+- **Broadcast Mode**: Mirror real-time input to all active terminal tabs.
 - **Key Manager**: Generate, export, and manage SSH keys (RSA/Ed25519) in a secure environment.
 
-### 🎨 User Interface
-- **Responsive Layout**: Resizable sidebar with GridSplitter and adaptive window scaling.
-- **Professional Themes**: Switch between **Default (Dark)**, **Retro (Classic)**, and **Nord (Frost)** themes.
-- **Glassmorphism UI**: Modern, translucent interfaces with smooth transitions and subtle animations.
+### 🎨 User Interface (Corporate Cyberpunk)
+- **Fluid Layout**: Resizable sidebar with GridSplitter and adaptive window scaling using WindowChrome.
+- **Dynamic Theme Engine**: Select from **Dracula**, **Nord**, **Monokai**, **CyberNeon**, and **Retro** using dedicated "Theme Orbs".
+- **Glassmorphism UI**: Premium Translucent interfaces with smooth gradients, glow effects, and subtle animations.
+- **Liquid Scrollbars**: Integrated, ultra-thin scrollbars that expand and highlight on interaction.
 
 ### ⚙️ Full Settings Menu
 - **Terminal Customization**: Change font families (Consolas, Cascadia, etc.) and font sizes.
 - **Global Preferences**: Configure auto-connection, keep-alive intervals, and custom session logging paths.
-- **ANSI Engine**: Full support for 256 ANSI colors with toggle capabilities.
-
-### 🛡️ Resilience & Performance
-- **Smart Data Buffering**: High-speed terminal rendering with batch-processing to prevent UI freezes.
-- **Detailed Logging**: Boot sequence logs and timestamped session recording for audit trails.
-- **Global Error Handling**: Robust "Black Box" exception management to prevent application crashes.
+- **ANSI Engine**: Full support for 256 ANSI colors with batch-processing performance.
 
 ---
 
@@ -33,15 +31,7 @@
 - **Platform**: .NET 8.0 WPF
 - **Architecture**: MVVM (CommunityToolkit.Mvvm)
 - **Protocols**: SSH.NET (SSH, SFTP, Port Forwarding)
-- **Styling**: Vanilla XAML + DynamicResource Theme Engine
-
----
-
-## 📂 Project Structure
-- `OmegaSSH/`: Main application source.
-- `OmegaSSH/Infrastructure/`: ANSI Parsers, Binding Proxies, and UI Helpers.
-- `OmegaSSH/Services/`: SSH, Session Management, Settings, and Logging logic.
-- `OmegaSSH/ViewModels/`: Pure logic for terminals, SFTP, and application state.
+- **Rendering**: Custom ANSI-to-WPF Parser with high-performance buffering.
 
 ---
 
@@ -53,7 +43,8 @@
 ---
 
 ## 📜 Version History
-- **v1.1.0-Stable**: Added resizable sidebar, complete Session Manager, full Settings Menu, and finalized UI design.
+- **v1.2.0-Alpha**: "The Orchestration Update" - Local Shell support, Multi-Commander, Broadcast Mode, and a complete UI overhaul with Corporate Cyberpunk aesthetics.
+- **v1.1.0-Stable**: Added resizable sidebar, complete Session Manager, and full Settings Menu.
 - **v1.0.0-Beta**: Initial Release - Architecture Foundation, SSH core, and Theme Engine.
 
 *Developed with ❤️ by Antigravity*

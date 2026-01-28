@@ -8,4 +8,5 @@ public class SnippetModel
     public string Name { get; set; } = string.Empty;
     public string Command { get; set; } = string.Empty;
     public string? Description { get; set; }
+    public string Category { get; set; } = "General";
 }

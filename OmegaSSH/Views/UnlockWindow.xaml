@@ -1,0 +1,22 @@
+<Window x:Class="OmegaSSH.Views.UnlockWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        Title="Unlock OmegaSSH" Height="300" Width="400"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
+    
+    <Border Background="{StaticResource BgBrush}" CornerRadius="15" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+        <Grid Margin="30">
+            <StackPanel VerticalAlignment="Center">
+                <fa:ImageAwesome Icon="Lock" Width="40" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,0,20"/>
+                <TextBlock Text="OMEGASSH VAULT" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                <TextBlock Text="Enter master password to decrypt your sessions." Foreground="{StaticResource TextDimBrush}" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                
+                <PasswordBox x:Name="VaultPassBox" Style="{StaticResource ModernPasswordBox}" KeyDown="VaultPassBox_KeyDown"/>
+                
+                <Button Content="UNLOCK SYSTEM" Click="Unlock_Click" Style="{StaticResource ModernButton}" Height="40" Margin="0,20,0,0"/>
+                <Button Content="EXIT" Click="Exit_Click" Background="Transparent" BorderThickness="0" Foreground="{StaticResource TextDimBrush}" Margin="0,10,0,0"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

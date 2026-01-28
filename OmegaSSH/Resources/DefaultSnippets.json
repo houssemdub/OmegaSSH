@@ -1,0 +1,147 @@
+[
+    {
+        "Category": "Ubuntu/Debian",
+        "Snippets": [
+            {
+                "Name": "Update System",
+                "Command": "sudo apt update && sudo apt upgrade -y",
+                "Description": "Update package lists and upgrade all packages"
+            },
+            {
+                "Name": "Install Docker",
+                "Command": "sudo apt install docker.io -y && sudo systemctl start docker && sudo systemctl enable docker",
+                "Description": "Install and enable Docker"
+            },
+            {
+                "Name": "Check Disk Usage",
+                "Command": "df -h",
+                "Description": "Display disk space usage"
+            },
+            {
+                "Name": "Monitor System Resources",
+                "Command": "htop",
+                "Description": "Interactive process viewer"
+            },
+            {
+                "Name": "List Services",
+                "Command": "systemctl list-units --type=service",
+                "Description": "List all systemd services"
+            }
+        ]
+    },
+    {
+        "Category": "CentOS/RHEL",
+        "Snippets": [
+            {
+                "Name": "Update System",
+                "Command": "sudo yum update -y",
+                "Description": "Update all packages"
+            },
+            {
+                "Name": "Install NGINX",
+                "Command": "sudo yum install nginx -y && sudo systemctl start nginx && sudo systemctl enable nginx",
+                "Description": "Install and start NGINX web server"
+            },
+            {
+                "Name": "Firewall Status",
+                "Command": "sudo firewall-cmd --list-all",
+                "Description": "Check firewall rules"
+            }
+        ]
+    },
+    {
+        "Category": "Alpine Linux",
+        "Snippets": [
+            {
+                "Name": "Update System",
+                "Command": "apk update && apk upgrade",
+                "Description": "Update Alpine packages"
+            },
+            {
+                "Name": "Install Package",
+                "Command": "apk add {{package_name}}",
+                "Description": "Install a package (use variable substitution)"
+            }
+        ]
+    },
+    {
+        "Category": "Windows/PowerShell",
+        "Snippets": [
+            {
+                "Name": "Check Windows Version",
+                "Command": "Get-ComputerInfo | Select WindowsVersion, OsHardwareAbstractionLayer",
+                "Description": "Display Windows version info"
+            },
+            {
+                "Name": "List Running Services",
+                "Command": "Get-Service | Where-Object {$_.Status -eq 'Running'}",
+                "Description": "Show all running services"
+            },
+            {
+                "Name": "Network Adapters",
+                "Command": "Get-NetAdapter",
+                "Description": "List network adapters"
+            }
+        ]
+    },
+    {
+        "Category": "Cisco/Network",
+        "Snippets": [
+            {
+                "Name": "Show Running Config",
+                "Command": "show running-config",
+                "Description": "Display current configuration"
+            },
+            {
+                "Name": "Show Interfaces",
+                "Command": "show ip interface brief",
+                "Description": "Display interface status"
+            },
+            {
+                "Name": "Show Routes",
+                "Command": "show ip route",
+                "Description": "Display routing table"
+            }
+        ]
+    },
+    {
+        "Category": "Git",
+        "Snippets": [
+            {
+                "Name": "Git Status",
+                "Command": "git status",
+                "Description": "Show working tree status"
+            },
+            {
+                "Name": "Git Pull All",
+                "Command": "git pull origin $(git branch --show-current)",
+                "Description": "Pull latest changes from current branch"
+            },
+            {
+                "Name": "Git Log Pretty",
+                "Command": "git log --oneline --graph --decorate --all -20",
+                "Description": "Show pretty commit history"
+            }
+        ]
+    },
+    {
+        "Category": "Docker",
+        "Snippets": [
+            {
+                "Name": "List Containers",
+                "Command": "docker ps -a",
+                "Description": "List all containers"
+            },
+            {
+                "Name": "Clean System",
+                "Command": "docker system prune -af",
+                "Description": "Remove unused data"
+            },
+            {
+                "Name": "Container Logs",
+                "Command": "docker logs -f {{container_name}}",
+                "Description": "Follow container logs"
+            }
+        ]
+    }
+]

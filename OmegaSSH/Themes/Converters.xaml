@@ -5,4 +5,8 @@
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     
     <local:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+    <local:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    
+    <local:SplitToColumnsConverter x:Key="SplitToColumnsConverter"/>
+    <local:SplitToRowsConverter x:Key="SplitToRowsConverter"/>
 </ResourceDictionary>

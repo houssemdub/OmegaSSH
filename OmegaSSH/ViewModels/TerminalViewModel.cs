@@ -1,115 +1,132 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using OmegaSSH.Models;
 using OmegaSSH.Services;
 using System;
-using System.Text;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OmegaSSH.ViewModels;
 
 public partial class TerminalViewModel : ObservableObject, IDisposable
 {
-    private readonly ISshService _sshService;
-    private readonly ISessionLogger _logger;
-    private readonly StringBuilder _outputBuffer = new StringBuilder();
-    private readonly System.Timers.Timer _updateTimer;
-    
-    [ObservableProperty]
-    private string _terminalOutput = string.Empty;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ISettingsService _settingsService;
+    private readonly SessionModel _session;
 
     [ObservableProperty]
     private string _sessionName;
 
     [ObservableProperty]
-    private SftpViewModel _sftp;
+    private SftpViewModel? _sftp;
 
     [ObservableProperty] private string _terminalFontFamily;
     [ObservableProperty] private double _terminalFontSize;
 
-    public TerminalViewModel(ISshService sshService, ISessionLogger logger, ISettingsService settingsService, SessionModel session)
+    [ObservableProperty]
+    private ObservableCollection<TerminalPaneViewModel> _panes = new();
+
+    [ObservableProperty]
+    private TerminalPaneViewModel? _activePane;
+
+    [ObservableProperty]
+    private bool _isSplit;
+
+    [ObservableProperty]
+    private bool _isVerticalSplit = true;
+
+    public TerminalViewModel(IShellEngine engine, ISessionLogger logger, ISettingsService settingsService, IServiceProvider serviceProvider, SessionModel session)
     {
-        _sshService = sshService;
-        _logger = logger;
+        _settingsService = settingsService;
+        _serviceProvider = serviceProvider;
+        _session = session;
         _sessionName = session.Name;
-        _sftp = new SftpViewModel(sshService);
+        
+        // The first pane uses the injected engine
+        var firstPane = new TerminalPaneViewModel(engine, logger, session);
+        Panes.Add(firstPane);
+        ActivePane = firstPane;
+
+        if (engine is ISshService ssh)
+        {
+            _sftp = new SftpViewModel(ssh);
+        }
+        else
+        {
+            // Placeholder or null for local sessions
+            // _sftp = null; // Need to make Sftp nullable in property if so
+        }
+
         _terminalFontFamily = settingsService.Settings.TerminalFontFamily;
         _terminalFontSize = settingsService.Settings.TerminalFontSize;
-        _sshService.DataReceived += OnDataReceived;
-        
-        _logger.Initialize(session.Name);
-        
-        // Initialize update timer (50ms for smooth updates without freezing)
-        _updateTimer = new System.Timers.Timer(50);
-        _updateTimer.Elapsed += (s, e) => FlushBuffer();
-        _updateTimer.AutoReset = true;
-        _updateTimer.Start();
-
-        Connect(session);
     }
 
-    private void FlushBuffer()
+    [RelayCommand]
+    private void SplitVertical()
     {
-        string dataToProcess;
-        lock (_outputBuffer)
-        {
-            if (_outputBuffer.Length == 0) return;
-            dataToProcess = _outputBuffer.ToString();
-            _outputBuffer.Clear();
-        }
+        Split(true);
+    }
 
-        // Notify the view (ANSI Parser)
-        DataReceived?.Invoke(dataToProcess);
+    [RelayCommand]
+    private void SplitHorizontal()
+    {
+        Split(false);
+    }
+
+    private void Split(bool vertical)
+    {
+        if (Panes.Count >= 4) return; // Limit for demo
+
+        IShellEngine newEngine;
+        var logger = _serviceProvider.GetRequiredService<ISessionLogger>();
+
+        if (_session.Name.StartsWith("local:"))
+        {
+            var shell = _session.Name.Split(':')[1];
+            newEngine = new LocalTerminalService(shell + ".exe");
+        }
+        else
+        {
+            newEngine = _serviceProvider.GetRequiredService<ISshService>();
+        }
         
-        // Log to file
-        _logger.Log(dataToProcess);
-
-        // Update the string property for backup/history (limited)
-        App.Current.Dispatcher.BeginInvoke(new Action(() =>
-        {
-            if (TerminalOutput.Length > 50000) 
-                TerminalOutput = TerminalOutput.Substring(25000);
-            TerminalOutput += dataToProcess;
-        }), System.Windows.Threading.DispatcherPriority.Background);
+        var newPane = new TerminalPaneViewModel(newEngine, logger, _session);
+        
+        Panes.Add(newPane);
+        ActivePane = newPane;
+        IsSplit = true;
+        IsVerticalSplit = vertical;
     }
 
-    public event Action<string>? DataReceived;
-
-    private void OnDataReceived(string data)
+    [RelayCommand]
+    private void ClosePane(TerminalPaneViewModel? pane)
     {
-        lock (_outputBuffer)
-        {
-            _outputBuffer.Append(data);
-        }
-    }
+        if (pane == null) pane = ActivePane;
+        if (pane == null || Panes.Count <= 1) return;
 
-    private async void Connect(SessionModel session)
-    {
-        try
-        {
-            lock (_outputBuffer) { _outputBuffer.Append($"Connecting to {session.Host}...\n"); }
-            await _sshService.ConnectAsync(session);
-            lock (_outputBuffer) { _outputBuffer.Append("Connected.\n"); }
-            await Sftp.RefreshAsync();
-        }
-        catch (Exception ex)
-        {
-            lock (_outputBuffer) { _outputBuffer.Append($"\nConnection Error: {ex.Message}\n"); }
-        }
+        Panes.Remove(pane);
+        pane.Dispose();
+        ActivePane = Panes.LastOrDefault();
+        if (Panes.Count <= 1) IsSplit = false;
     }
 
     [RelayCommand]
     private async Task SendInput(string input)
     {
-        await _sshService.SendCommandAsync(input);
+        if (ActivePane != null)
+        {
+            await ActivePane.SendInputCommand.ExecuteAsync(input);
+        }
     }
 
     public void Dispose()
     {
-        _updateTimer?.Stop();
-        _updateTimer?.Dispose();
-        _logger?.Dispose();
-        _sshService.DataReceived -= OnDataReceived;
-        _sshService.Dispose();
+        foreach (var pane in Panes)
+        {
+            pane.Dispose();
+        }
+        Sftp?.RefreshAsync().Wait(); // Just placeholder
     }
 }

@@ -5,16 +5,19 @@ using OmegaSSH.Models;
 
 namespace OmegaSSH.Services;
 
-public interface ISshService : IDisposable
+public interface ISshService : IShellEngine
 {
     Task ConnectAsync(SessionModel session);
-    Task DisconnectAsync();
-    Task SendCommandAsync(string command);
-    event Action<string>? DataReceived;
-
+    bool IsConnected { get; }
+    
     // SFTP Methods
     Task<List<SftpEntryModel>> ListDirectoryAsync(string path);
     Task DownloadFileAsync(string remotePath, string localPath);
     Task UploadFileAsync(string localPath, string remotePath);
     void CreateTunnel(TunnelModel tunnel);
+    
+    // IShellEngine compatibility
+    Task IShellEngine.ConnectAsync() => Task.CompletedTask; // Should use the Session version
+    Task IShellEngine.WriteAsync(string input) => SendCommandAsync(input);
+    Task SendCommandAsync(string command);
 }

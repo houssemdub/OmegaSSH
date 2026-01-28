@@ -9,279 +9,388 @@
         xmlns:vm="clr-namespace:OmegaSSH.ViewModels"
         xmlns:infra="clr-namespace:OmegaSSH.Infrastructure"
         mc:Ignorable="d"
-        Title="OmegaSSH" Height="700" Width="1100"
+        Title="OmegaSSH" Height="750" Width="1200"
         Background="{StaticResource BgBrush}"
         Foreground="{StaticResource TextBrush}"
         WindowStyle="None"
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen">
 
+    <Window.Resources>
+        <infra:BindingProxy x:Key="MainProxy" Data="{Binding}"/>
+        
+        <CollectionViewSource x:Key="GroupedSnippets" Source="{Binding Snippets}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Category"/>
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </Window.Resources>
+
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="40" GlassFrameThickness="0" CornerRadius="0" ResizeBorderThickness="8"/>
     </WindowChrome.WindowChrome>
 
-    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Background="{StaticResource BgBrush}">
+    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Background="{StaticResource BgBrush}" CornerRadius="12">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/> <!-- Title Bar -->
-                <RowDefinition Height="*"/>   <!-- Content -->
-                <RowDefinition Height="25"/> <!-- Status Bar -->
+                <RowDefinition Height="Auto"/> <!-- Global Header (Title + Menu) -->
+                <RowDefinition Height="*"/>    <!-- Content -->
+                <RowDefinition Height="Auto"/> <!-- Status Bar -->
             </Grid.RowDefinitions>
 
-            <!-- Custom Title Bar -->
-            <Grid Grid.Row="0" Background="{StaticResource SidebarBrush}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0">
-                    <fa:ImageAwesome Icon="Terminal" Width="16" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,10,0"/>
-                    <TextBlock Text="OMEGA SSH" FontFamily="Consolas" FontWeight="Bold" VerticalAlignment="Center"/>
-                </StackPanel>
+            <!-- PREMIUM HEADER -->
+            <Border Grid.Row="0" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="32"/>
+                    </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" Click="Minimize_Click"/>
-                    <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" Click="Maximize_Click"/>
-                    <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" Background="#22FF0000" Click="Close_Click"/>
-                </StackPanel>
-            </Grid>
+                    <!-- Title Bar -->
+                    <Grid Grid.Row="0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                            <fa:ImageAwesome Icon="Terminal" Width="14" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,12,0">
+                                <fa:ImageAwesome.Effect>
+                                    <DropShadowEffect BlurRadius="10" Color="{StaticResource AccentColor}" Opacity="0.5" ShadowDepth="0"/>
+                                </fa:ImageAwesome.Effect>
+                            </fa:ImageAwesome>
+                            <TextBlock Text="OMEGA" FontFamily="Segoe UI" FontWeight="Light" FontSize="14" VerticalAlignment="Center" Opacity="0.7"/>
+                            <TextBlock Text="SSH" FontFamily="Segoe UI" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="{StaticResource PrimaryAccentBrush}"/>
+                        </StackPanel>
 
-            <!-- Main Layout -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True" Margin="0,0,5,0">
+                            <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Click="Minimize_Click"/>
+                            <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Click="Maximize_Click"/>
+                            <Button Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Background="Transparent" Foreground="#FF5555" Click="Close_Click">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#33FF0000"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Integrated Menu -->
+                    <Menu Grid.Row="1" Background="Transparent" Foreground="{StaticResource TextBrush}" Margin="10,0">
+                        <MenuItem Header="_FILE">
+                            <MenuItem Header="_New Session" Command="{Binding AddSessionCommand}">
+                                <MenuItem.Icon><fa:ImageAwesome Icon="Plus" Width="10" Foreground="{StaticResource PrimaryAccentBrush}"/></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="New _Local Terminal">
+                                <MenuItem.Icon><fa:ImageAwesome Icon="Desktop" Width="10" Foreground="{StaticResource PrimaryAccentBrush}"/></MenuItem.Icon>
+                                <MenuItem Header="_PowerShell" Command="{Binding OpenLocalTerminalCommand}" CommandParameter="powershell.exe"/>
+                                <MenuItem Header="_Command Prompt" Command="{Binding OpenLocalTerminalCommand}" CommandParameter="cmd.exe"/>
+                            </MenuItem>
+                            <Separator/>
+                            <MenuItem Header="_Import" Command="{Binding ImportSessionsCommand}"/>
+                            <MenuItem Header="_Export" Command="{Binding ExportSessionsCommand}"/>
+                            <Separator/>
+                            <MenuItem Header="E_xit" Click="Close_Click"/>
+                        </MenuItem>
+                        <MenuItem Header="_VIEW">
+                            <MenuItem Header="Sidebar" Command="{Binding ToggleSidebarCommand}" IsCheckable="True" IsChecked="{Binding IsSidebarVisible}"/>
+                            <MenuItem Header="Snippets" Command="{Binding ToggleSnippetsPanelCommand}" IsCheckable="True" IsChecked="{Binding IsSnippetsPanelVisible}"/>
+                            <MenuItem Header="Status Bar" Command="{Binding ToggleStatusBarCommand}" IsCheckable="True" IsChecked="{Binding IsStatusBarVisible}"/>
+                            <Separator/>
+                            <MenuItem Header="_Zen Mode" Command="{Binding ToggleZenModeCommand}" InputGestureText="F11"/>
+                        </MenuItem>
+                        <MenuItem Header="_ORCHESTRATION">
+                            <MenuItem Header="Key Manager" Command="{Binding OpenKeyManagerCommand}"/>
+                            <MenuItem Header="Multi-Commander" Command="{Binding OpenMultiCommanderCommand}"/>
+                            <Separator/>
+                            <MenuItem Header="Broadcast Mode" Command="{Binding ToggleBroadcastModeCommand}" IsCheckable="True" IsChecked="{Binding IsBroadcastMode}"/>
+                        </MenuItem>
+                    </Menu>
+                </Grid>
+            </Border>
+
+            <!-- MAIN CONTENT -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="260" MinWidth="200" MaxWidth="500"/> <!-- Sidebar Sessions -->
-                    <ColumnDefinition Width="Auto"/> <!-- Splitter -->
-                    <ColumnDefinition Width="*"/>   <!-- Main Content (Terminals/Tools) -->
+                    <ColumnDefinition Width="280">
+                        <ColumnDefinition.Style>
+                            <Style TargetType="ColumnDefinition">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSidebarVisible}" Value="False">
+                                        <Setter Property="Width" Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ColumnDefinition.Style>
+                    </ColumnDefinition>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="220">
+                        <ColumnDefinition.Style>
+                            <Style TargetType="ColumnDefinition">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSnippetsPanelVisible}" Value="False">
+                                        <Setter Property="Width" Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ColumnDefinition.Style>
+                    </ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <!-- Sidebar -->
-                <Border Grid.Column="0" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
-                    <Grid>
+                <!-- LEFT SIDEBAR: SESSIONS -->
+                <Border Grid.Column="0" Background="{StaticResource SidebarGradient}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+                    <Grid Margin="10,20">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Search Box -->
-                        <Border Padding="15">
+                        <!-- Search Palette -->
+                        <Border Grid.Row="0" Margin="0,0,0,20">
                             <Grid>
-                                <TextBox Style="{StaticResource ModernTextBox}" x:Name="SearchBox" 
+                                <TextBox Style="{StaticResource ModernTextBox}" 
                                          Text="{Binding SessionFilter, UpdateSourceTrigger=PropertyChanged}"
-                                         Tag="Search sessions..." />
-                                <fa:ImageAwesome Icon="Search" Width="12" Foreground="{StaticResource TextDimBrush}" HorizontalAlignment="Right" Margin="0,0,10,0" IsHitTestVisible="False"/>
+                                         Tag="Quick jump..." Height="38" FontSize="12"/>
+                                <fa:ImageAwesome Icon="Search" Width="12" Foreground="{StaticResource TextDimBrush}" HorizontalAlignment="Right" Margin="0,0,15,0" IsHitTestVisible="False" Opacity="0.5"/>
                             </Grid>
                         </Border>
 
-                        <!-- Session Tree -->
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="10,0">
-                                <Grid>
-                                    <TextBlock Text="SESSIONS" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="5,10" FontWeight="Bold"/>
-                                    <Button Style="{StaticResource IconButton}" Command="{Binding AddSessionCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="Add New Session">
-                                        <fa:ImageAwesome Icon="Plus" Width="10" Foreground="{StaticResource TextDimBrush}"/>
+                        <TextBlock Grid.Row="1" Text="INFRASTRUCTURE" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextDimBrush}" Margin="5,0,0,10"/>
+
+                        <!-- Session Navigator -->
+                        <TreeView Grid.Row="2" ItemsSource="{Binding SessionTree}" Background="Transparent" BorderThickness="0">
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type vm:SessionTreeItemViewModel}" ItemsSource="{Binding Children}">
+                                    <Border CornerRadius="6" Padding="8,4" Margin="0,1" Cursor="Hand" x:Name="itemBorder">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Grid Width="16" Margin="0,0,10,0">
+                                                <fa:ImageAwesome Icon="Folder" Width="14" Foreground="{StaticResource HighlightAccentBrush}" Visibility="{Binding IsFolder, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <fa:ImageAwesome Icon="Server" Width="14" Foreground="{StaticResource PrimaryAccentBrush}" Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextBrush}" FontSize="12" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <HierarchicalDataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsFolder}" Value="False">
+                                            <Setter TargetName="itemBorder" Property="Background" Value="Transparent"/>
+                                        </DataTrigger>
+                                    </HierarchicalDataTemplate.Triggers>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="TreeViewItem">
+                                    <EventSetter Event="MouseDoubleClick" Handler="SessionTreeItem_DoubleClick"/>
+                                    <Setter Property="IsExpanded" Value="True"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="TreeViewItem">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                                        <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                                    </Border>
+                                                    <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Margin="15,0,0,0"/>
+                                                </Grid>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsExpanded" Value="False">
+                                                        <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="Bd" Property="Background" Value="#11FFFFFF"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True" SourceName="Bd">
+                                                        <Setter TargetName="Bd" Property="Background" Value="{StaticResource GlassBrush}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                        </TreeView>
+
+                        <!-- Sidebar Footer Tools -->
+                        <Border Grid.Row="3" Margin="0,15,0,0" Padding="0,15,0,0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+                            <Grid>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Style="{StaticResource IconButton}" Command="{Binding OpenSettingsCommand}" ToolTip="SYSTEM SETTINGS">
+                                        <fa:ImageAwesome Icon="Gear" Width="14" Opacity="0.5"/>
                                     </Button>
-                                </Grid>
-                                
-                                <TreeView ItemsSource="{Binding SessionTree}" Background="Transparent" BorderThickness="0" x:Name="SessionTreeView">
-                                    <TreeView.Resources>
-                                        <infra:BindingProxy x:Key="MainProxy" Data="{Binding}"/>
-                                        
-                                        <HierarchicalDataTemplate DataType="{x:Type vm:SessionTreeItemViewModel}" ItemsSource="{Binding Children}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource HighlightAccentBrush}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                                <fa:ImageAwesome Icon="Server" Width="12" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                                <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextBrush}"/>
-                                            </StackPanel>
-                                        </HierarchicalDataTemplate>
-                                    </TreeView.Resources>
-                                    <TreeView.ItemContainerStyle>
-                                        <Style TargetType="TreeViewItem">
-                                            <EventSetter Event="MouseDoubleClick" Handler="SessionTreeItem_DoubleClick"/>
-                                            <Setter Property="IsExpanded" Value="True"/>
-                                            <Setter Property="ContextMenu">
-                                                <Setter.Value>
-                                                    <ContextMenu Style="{StaticResource ModernContextMenu}">
-                                                        <MenuItem Header="Edit Connection" 
-                                                                  Command="{Binding Data.EditSessionCommand, Source={StaticResource MainProxy}}" 
-                                                                  CommandParameter="{Binding Session}"
-                                                                  Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                                        <MenuItem Header="Duplicate" 
-                                                                  Command="{Binding Data.DuplicateSessionCommand, Source={StaticResource MainProxy}}" 
-                                                                  CommandParameter="{Binding Session}"
-                                                                  Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                                        <Separator Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                                        <MenuItem Header="Delete" 
-                                                                  Command="{Binding Data.DeleteSessionCommand, Source={StaticResource MainProxy}}" 
-                                                                  CommandParameter="{Binding Session}" 
-                                                                  Foreground="#FF4444"
-                                                                  Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                                    </ContextMenu>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </TreeView.ItemContainerStyle>
-                                </TreeView>
-                            </StackPanel>
-                        </ScrollViewer>
-
-                        <!-- Sidebar Tools -->
-                        <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10">
-                            <StackPanel>
-                                <Button Content="NEW CONNECTION" Command="{Binding CreateTestSessionCommand}" 
-                                        Style="{StaticResource ModernButton}" Margin="0,0,0,10"/>
-                                
-                                <Grid>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Style="{StaticResource IconButton}" Command="{Binding OpenKeyManagerCommand}" ToolTip="Key Manager">
-                                            <fa:ImageAwesome Icon="Key" Width="12" Foreground="{StaticResource TextDimBrush}"/>
-                                        </Button>
-                                        <Button Style="{StaticResource IconButton}" Command="{Binding OpenSettingsCommand}" ToolTip="Settings" Margin="5,0,0,0">
-                                            <fa:ImageAwesome Icon="Gear" Width="12" Foreground="{StaticResource TextDimBrush}"/>
-                                        </Button>
+                                    <Button Style="{StaticResource IconButton}" Command="{Binding OpenKeyManagerCommand}" ToolTip="KEYS &amp; VAULT" Margin="5,0,0,0">
+                                        <fa:ImageAwesome Icon="Shield" Width="14" Opacity="0.5"/>
+                                    </Button>
+                                    <Border Width="1" Background="{StaticResource BorderBrush}" Margin="8,4"/>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Background="#282A36" ToolTip="Dracula" Command="{Binding ChangeThemeCommand}" CommandParameter="dracula" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0"/>
+                                        <Button Background="#2E3440" ToolTip="Nord" Command="{Binding ChangeThemeCommand}" CommandParameter="nord" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0"/>
+                                        <Button Background="#0A0E1A" ToolTip="CyberNeon" Command="{Binding ChangeThemeCommand}" CommandParameter="cyberneon" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0"/>
+                                        <Button Background="#000000" ToolTip="Retro" Command="{Binding ChangeThemeCommand}" CommandParameter="retro" Style="{StaticResource RoundThemeButton}"/>
                                     </StackPanel>
-
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button Width="12" Height="12" Background="#22FFFFFF" ToolTip="Classic" Command="{Binding ChangeThemeCommand}" CommandParameter="default" Style="{StaticResource RoundThemeButton}"/>
-                                    </StackPanel>
-                                </Grid>
-                            </StackPanel>
+                                </StackPanel>
+                            </Grid>
                         </Border>
                     </Grid>
                 </Border>
 
-                <!-- Grid Splitter -->
-                <GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" 
-                              Background="{StaticResource BorderBrush}"/>
+                <!-- CENTER VIEW: TERMINALS -->
+                <Grid Grid.Column="2" x:Name="CenterView">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                <!-- Main Content Area -->
-                <Grid Grid.Column="2">
-                    <Grid.Style>
-                        <Style TargetType="Grid">
-                            <Style.Triggers>
-                                <EventTrigger RoutedEvent="Loaded">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"/>
-                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" From="20" To="0" Duration="0:0:0.5">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <CubicEase EasingMode="EaseOut"/>
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <DataTrigger Binding="{Binding IsKeyManagerActive}" Value="True">
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsKeyManagerActive}" Value="False">
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Grid.Style>
-                    <Grid.RenderTransform>
-                        <TranslateTransform/>
-                    </Grid.RenderTransform>
-                    <!-- Tabs View -->
-                    <Grid Visibility="{Binding IsKeyManagerActive, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="180"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Terminal Area -->
-                        <Grid Grid.Column="0">
-                            <TabControl ItemsSource="{Binding TerminalTabs}" SelectedItem="{Binding SelectedTab}" Background="Transparent" BorderThickness="0" Padding="0">
-                                <TabControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <fa:ImageAwesome Icon="Terminal" Width="10" Margin="0,0,5,0" Foreground="{StaticResource PrimaryAccentBrush}"/>
-                                            <TextBlock Text="{Binding SessionName}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </TabControl.ItemTemplate>
-                                <TabControl.ContentTemplate>
-                                    <DataTemplate>
-                                        <views:TerminalView />
-                                    </DataTemplate>
-                                </TabControl.ContentTemplate>
-                            </TabControl>
+                    <!-- QUICK ACTION HEADER -->
+                    <Border Grid.Row="0" Margin="20,15" Background="{StaticResource SurfaceBrush}" CornerRadius="12" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <Grid Margin="15,8">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <fa:ImageAwesome Icon="Bolt" Width="12" Foreground="{StaticResource HighlightAccentBrush}" Margin="0,0,12,0"/>
+                                <TextBox x:Name="QuickConnectBox" Width="400" Background="Transparent" BorderThickness="0" Foreground="White" 
+                                         Tag="Type user@host to warp..." Padding="0" VerticalAlignment="Center" FontSize="13"
+                                         KeyDown="QuickConnectBox_KeyDown" Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+                            
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Grid Margin="0,0,15,0">
+                                    <Border Width="8" Height="8" CornerRadius="4" Background="#FF4444" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="-12,0,0,0">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsBroadcastMode}" Value="True">
+                                                        <Setter Property="Background" Value="#00FF00"/>
+                                                        <DataTrigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard RepeatBehavior="Forever">
+                                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0.3" Duration="0:0:0.8" AutoReverse="True"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.EnterActions>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsBroadcastMode}" Value="False">
+                                                        <Setter Property="Opacity" Value="0.3"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
+                                    <TextBlock Text="BROADCAST" FontSize="9" FontWeight="Bold" VerticalAlignment="Center" Opacity="0.5"/>
+                                </Grid>
+                                <Button Style="{StaticResource IconButton}" Command="{Binding AddSessionCommand}">
+                                    <fa:ImageAwesome Icon="Plus" Width="14" Opacity="0.7"/>
+                                </Button>
+                            </StackPanel>
                         </Grid>
+                    </Border>
 
-                        <!-- Snippets Sidebar -->
-                        <Border Grid.Column="1" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,0,0">
+                    <!-- TERMINAL COMPARTMENT -->
+                    <Grid Grid.Row="1" Margin="10,0,10,10">
+                        <!-- Key Manager Overlay -->
+                        <Border Panel.ZIndex="100" Background="{StaticResource BgBrush}" Visibility="{Binding IsKeyManagerActive, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="20">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-
-                                <TextBlock Text="SNIPPETS" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="15,15,15,5" FontWeight="Bold"/>
-
-                                <ListBox Grid.Row="1" ItemsSource="{Binding Snippets}" Background="Transparent" BorderThickness="0">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Padding="10" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <StackPanel>
-                                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextBrush}" FontWeight="SemiBold" FontSize="11"/>
-                                                        <TextBlock Text="{Binding Command}" Foreground="{StaticResource TextDimBrush}" FontSize="9" TextTrimming="CharacterEllipsis"/>
-                                                    </StackPanel>
-                                                    <Button Grid.Column="1" Style="{StaticResource IconButton}" 
-                                                            Command="{Binding DataContext.ExecuteSnippetCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            CommandParameter="{Binding}">
-                                                        <fa:ImageAwesome Icon="Play" Width="10" Foreground="{StaticResource SecondaryAccentBrush}"/>
-                                                    </Button>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                <Button Style="{StaticResource IconButton}" Command="{Binding CloseKeyManagerCommand}" HorizontalAlignment="Left" Margin="0,0,0,20">
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="ArrowLeft" Width="12" Margin="0,0,10,0"/>
+                                        <TextBlock Text="RETURN TO COMMAND CENTER" FontWeight="Bold" FontSize="10"/>
+                                    </StackPanel>
+                                </Button>
+                                <views:KeyManagerView Grid.Row="1" DataContext="{Binding KeyManager}"/>
                             </Grid>
                         </Border>
-                    </Grid>
 
-                    <!-- Key Manager View -->
-                    <Grid Visibility="{Binding IsKeyManagerActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TabControl ItemsSource="{Binding TerminalTabs}" SelectedItem="{Binding SelectedTab}">
+                            <TabControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Terminal" Width="12" Margin="0,0,10,0" Foreground="{StaticResource PrimaryAccentBrush}"/>
+                                        <TextBlock Text="{Binding SessionName}" FontSize="12" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                        <Button Style="{StaticResource IconButton}" Padding="2" Command="{Binding Data.CloseTabCommand, Source={StaticResource MainProxy}}" CommandParameter="{Binding}">
+                                            <fa:ImageAwesome Icon="Close" Width="8" Opacity="0.5"/>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </TabControl.ItemTemplate>
+                            <TabControl.ContentTemplate>
+                                <DataTemplate>
+                                    <Border Background="{StaticResource SidebarBrush}" CornerRadius="0,12,12,12" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                        <views:TerminalView />
+                                    </Border>
+                                </DataTemplate>
+                            </TabControl.ContentTemplate>
+                        </TabControl>
+                    </Grid>
+                </Grid>
+
+                <!-- RIGHT SIDEBAR: SNIPPETS -->
+                <Border Grid.Column="4" Background="{StaticResource SidebarGradient}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,0,0">
+                    <Grid Margin="10,20">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <Button Style="{StaticResource IconButton}" Command="{Binding CloseKeyManagerCommand}" HorizontalAlignment="Left" Margin="20,10">
-                            <StackPanel Orientation="Horizontal">
-                                <fa:ImageAwesome Icon="ArrowLeft" Width="12" Foreground="{StaticResource TextDimBrush}" Margin="0,0,10,0"/>
-                                <TextBlock Text="Back to Terminals" Foreground="{StaticResource TextDimBrush}"/>
-                            </StackPanel>
-                        </Button>
-                        <views:KeyManagerView Grid.Row="1" DataContext="{Binding KeyManager}"/>
+
+                        <TextBlock Text="SNIPPET LIBRARY" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextDimBrush}" Margin="5,0,0,15"/>
+
+                        <ListBox Grid.Row="1" ItemsSource="{Binding Source={StaticResource GroupedSnippets}}" Background="Transparent" BorderThickness="0" VirtualizingPanel.IsVirtualizing="True">
+                             <ListBox.GroupStyle>
+                                <GroupStyle>
+                                    <GroupStyle.HeaderTemplate>
+                                        <DataTemplate>
+                                            <Border Padding="5,15,5,5">
+                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{StaticResource SecondaryAccentBrush}" FontSize="9" Opacity="0.7" TextAlignment="Left"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </GroupStyle.HeaderTemplate>
+                                </GroupStyle>
+                            </ListBox.GroupStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="8" Background="{StaticResource SurfaceBrush}" Padding="15,12" Margin="0,0,0,8" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Cursor="Hand">
+                                        <Border.InputBindings>
+                                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Data.ExecuteSnippetCommand, Source={StaticResource MainProxy}}" CommandParameter="{Binding}"/>
+                                        </Border.InputBindings>
+                                        <Grid>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Name}" Foreground="White" FontWeight="SemiBold" FontSize="11" Margin="0,0,0,4"/>
+                                                <TextBlock Text="{Binding Command}" Foreground="{StaticResource TextDimBrush}" FontSize="10" TextTrimming="CharacterEllipsis" FontFamily="Consolas" Opacity="0.6"/>
+                                            </StackPanel>
+                                            <fa:ImageAwesome Icon="Play" Width="8" Foreground="{StaticResource PrimaryAccentBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Opacity="0"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </Grid>
-                </Grid>
+                </Border>
             </Grid>
 
-            <!-- Status Bar -->
-            <Border Grid.Row="2" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
-                <Grid Margin="10,0">
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="8" Height="8" Fill="#00FF00" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+            <!-- PREMIUM STATUS BAR -->
+            <Border Grid.Row="2" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" CornerRadius="0,0,12,12" Height="30"
+                    Visibility="{Binding IsStatusBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid Margin="20,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Width="6" Height="6" CornerRadius="3" Background="#00FF00" Margin="0,0,10,0">
+                            <Border.Effect>
+                                <BlurEffect Radius="4"/>
+                            </Border.Effect>
+                        </Border>
+                        <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontSize="10" Foreground="{StaticResource TextDimBrush}" Opacity="0.8"/>
                     </StackPanel>
                     
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBlock Text="SSH: AES-256" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextDimBrush}" Margin="10,0"/>
-                        <TextBlock Text="UTF-8" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Border Background="{StaticResource GlassBrush}" CornerRadius="4" Padding="8,2" Margin="10,0">
+                            <TextBlock Text="AES-256-GCM" FontSize="9" FontWeight="Bold" Foreground="{StaticResource PrimaryAccentBrush}"/>
+                        </Border>
+                        <TextBlock Text="READY" FontSize="9" FontWeight="Black" Opacity="0.4"/>
                     </StackPanel>
                 </Grid>
             </Border>

@@ -28,10 +28,52 @@ public class SnippetService : ISnippetService
 
     public async Task<List<SnippetModel>> GetAllSnippetsAsync()
     {
-        if (!File.Exists(_storagePath)) return new List<SnippetModel>();
+        if (!File.Exists(_storagePath))
+        {
+            await SeedDefaultSnippetsAsync();
+        }
+        
         var json = await File.ReadAllTextAsync(_storagePath);
         _snippets = JsonConvert.DeserializeObject<List<SnippetModel>>(json) ?? new List<SnippetModel>();
         return _snippets;
+    }
+
+    private async Task SeedDefaultSnippetsAsync()
+    {
+        try
+        {
+            var defaultPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "DefaultSnippets.json");
+            if (!File.Exists(defaultPath))
+            {
+                // Fallback for dev environment
+                defaultPath = @"d:\Visual Studio Projects\C#\OmegaSSH\OmegaSSH\Resources\DefaultSnippets.json";
+            }
+
+            if (File.Exists(defaultPath))
+            {
+                var json = await File.ReadAllTextAsync(defaultPath);
+                var categories = JsonConvert.DeserializeObject<List<SnippetCategoryDto>>(json);
+                if (categories != null)
+                {
+                    foreach (var cat in categories)
+                    {
+                        foreach (var snip in cat.Snippets)
+                        {
+                            snip.Category = cat.Category;
+                            _snippets.Add(snip);
+                        }
+                    }
+                    await PersistAsync();
+                }
+            }
+        }
+        catch { }
+    }
+
+    private class SnippetCategoryDto
+    {
+        public string Category { get; set; } = string.Empty;
+        public List<SnippetModel> Snippets { get; set; } = new();
     }
 
     public async Task SaveSnippetAsync(SnippetModel snippet)

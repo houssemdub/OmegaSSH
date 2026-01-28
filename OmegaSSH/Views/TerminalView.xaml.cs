@@ -1,60 +1,44 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Threading;
-using OmegaSSH.Infrastructure;
 using OmegaSSH.ViewModels;
 
 namespace OmegaSSH.Views;
 
 public partial class TerminalView : UserControl
 {
-    private AnsiParser _ansiParser = new AnsiParser();
-
     public TerminalView()
     {
         InitializeComponent();
-        this.DataContextChanged += TerminalView_DataContextChanged;
+        this.Loaded += TerminalView_Loaded;
     }
 
-    private void TerminalView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    private void TerminalView_Loaded(object sender, RoutedEventArgs e)
     {
-        if (e.NewValue is TerminalViewModel vm)
+        var window = Window.GetWindow(this);
+        if (window != null)
         {
-            // Subscribe to the raw data stream for ANSI parsing
-            vm.DataReceived -= Vm_DataReceived;
-            vm.DataReceived += Vm_DataReceived;
-            
-            // Replay any buffered output if necessary (VM could store history)
-            if (!string.IsNullOrEmpty(vm.TerminalOutput))
-            {
-                Vm_DataReceived(vm.TerminalOutput);
-            }
-        }
-        else if (e.OldValue is TerminalViewModel oldVm)
-        {
-            oldVm.DataReceived -= Vm_DataReceived;
+            window.PreviewKeyDown += Window_PreviewKeyDown;
         }
     }
 
-    private void Vm_DataReceived(string data)
+    private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        if (string.IsNullOrEmpty(data)) return;
-        _ansiParser.ParseAndAppend(OutputBox, data);
-    }
-
-    private async void InputBox_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Enter)
+        if (e.Key == Key.F && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
         {
-            if (DataContext is TerminalViewModel vm)
+            SearchOverlay.Visibility = SearchOverlay.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            if (SearchOverlay.Visibility == Visibility.Visible)
             {
-                await vm.SendInputCommand.ExecuteAsync(InputBox.Text + "\r");
-                InputBox.Clear();
+                SearchBox.Focus();
+                SearchBox.SelectAll();
             }
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Escape && SearchOverlay.Visibility == Visibility.Visible)
+        {
+            SearchOverlay.Visibility = Visibility.Collapsed;
+            e.Handled = true;
         }
     }
 
@@ -68,5 +52,19 @@ public partial class TerminalView : UserControl
         {
             SftpPane.Visibility = Visibility.Visible;
         }
+    }
+
+    private void SearchBox_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            // Search functionality would need to work across panes
+            MessageBox.Show("Search across panes not yet implemented", "Info");
+        }
+    }
+
+    private void CloseSearch_Click(object sender, RoutedEventArgs e)
+    {
+        SearchOverlay.Visibility = Visibility.Collapsed;
     }
 }

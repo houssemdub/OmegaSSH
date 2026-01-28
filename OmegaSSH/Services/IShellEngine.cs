@@ -9,4 +9,5 @@ public interface IShellEngine : IDisposable
     Task DisconnectAsync();
     Task WriteAsync(string input);
     event Action<string>? DataReceived;
+    event Action? Disconnected;
 }

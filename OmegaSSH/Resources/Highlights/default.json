@@ -1,0 +1,66 @@
+{
+  "name": "Default Terminal Highlighting",
+  "version": "1.0",
+  "rules": [
+    {
+      "name": "Error Levels",
+      "pattern": "\\b(ERROR|FATAL|CRITICAL)\\b",
+      "foreground": "#FF4444",
+      "bold": true
+    },
+    {
+      "name": "Warning Levels",
+      "pattern": "\\b(WARN|WARNING)\\b",
+      "foreground": "#FFA500",
+      "bold": true
+    },
+    {
+      "name": "Info Levels",
+      "pattern": "\\b(INFO|DEBUG|TRACE)\\b",
+      "foreground": "#00BFFF",
+      "bold": false
+    },
+    {
+      "name": "Success Indicators",
+      "pattern": "\\b(SUCCESS|OK|PASS|DONE|COMPLETE)\\b",
+      "foreground": "#00FF00",
+      "bold": true
+    },
+    {
+      "name": "IP Addresses",
+      "pattern": "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b",
+      "foreground": "#FFD700",
+      "bold": false
+    },
+    {
+      "name": "URLs",
+      "pattern": "https?://[^\\s]+",
+      "foreground": "#00CED1",
+      "underline": true
+    },
+    {
+      "name": "File Paths (Unix)",
+      "pattern": "/[^\\s:]+",
+      "foreground": "#9370DB",
+      "bold": false
+    },
+    {
+      "name": "Timestamps",
+      "pattern": "\\d{4}-\\d{2}-\\d{2}[T\\s]\\d{2}:\\d{2}:\\d{2}",
+      "foreground": "#A9A9A9",
+      "italic": true
+    },
+    {
+      "name": "JSON Keys",
+      "pattern": "\"([^\"]+)\"\\s*:",
+      "foreground": "#87CEEB",
+      "bold": false
+    },
+    {
+      "name": "Numbers",
+      "pattern": "\\b\\d+(\\.\\d+)?\\b",
+      "foreground": "#FFA07A",
+      "bold": false
+    }
+  ]
+}

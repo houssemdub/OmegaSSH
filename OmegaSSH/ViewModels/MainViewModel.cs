@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -49,16 +50,31 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string _sessionFilter = string.Empty;
 
+    [ObservableProperty]
+    private bool _isSidebarVisible = true;
+
+    [ObservableProperty]
+    private bool _isSnippetsPanelVisible = true;
+
+    [ObservableProperty]
+    private bool _isStatusBarVisible = true;
+
+    [ObservableProperty]
+    private bool _isZenMode = false;
+
+    [ObservableProperty]
+    private bool _isBroadcastMode = false;
+
     partial void OnSessionFilterChanged(string value) => FilterSessions(value);
 
-    public MainViewModel(ISessionService sessionService, ISnippetService snippetService, ISettingsService settingsService, IServiceProvider serviceProvider, IKeyService keyService, IVaultService vaultService, IThemeService themeService)
+    public MainViewModel(ISessionService sessionService, ISnippetService snippetService, ISettingsService settingsService, IServiceProvider serviceProvider, IKeyService keyService, IVaultService vaultService, IThemeService themeService, IKeyStorageService keyStorageService)
     {
         _sessionService = sessionService;
         _snippetService = snippetService;
         _settingsService = settingsService;
         _serviceProvider = serviceProvider;
         _themeService = themeService;
-        _keyManager = new KeyManagerViewModel(keyService, vaultService);
+        _keyManager = new KeyManagerViewModel(keyService, vaultService, keyStorageService);
         LoadSessionsCommand.Execute(null);
     }
 
@@ -85,6 +101,15 @@ public partial class MainViewModel : ObservableObject
     private void OpenKeyManager()
     {
         IsKeyManagerActive = true;
+    }
+
+    [RelayCommand]
+    private void OpenMultiCommander()
+    {
+        var vm = _serviceProvider.GetRequiredService<JobOrchestratorViewModel>();
+        var win = new OmegaSSH.Views.MultiCommanderWindow { DataContext = vm };
+        win.Owner = App.Current.MainWindow;
+        win.ShowDialog();
     }
 
     [RelayCommand]
@@ -131,6 +156,18 @@ public partial class MainViewModel : ObservableObject
         {
             StatusText = $"Error loading sessions: {ex.Message}";
         }
+        await LoadSnippets();
+    }
+
+    private async Task LoadSnippets()
+    {
+        try
+        {
+            var snips = await _snippetService.GetAllSnippetsAsync();
+            Snippets.Clear();
+            foreach (var s in snips) Snippets.Add(s);
+        }
+        catch { }
     }
 
     private void FilterSessions(string filter)
@@ -176,10 +213,26 @@ public partial class MainViewModel : ObservableObject
         var sshService = _serviceProvider.GetRequiredService<ISshService>();
         var sessionLogger = _serviceProvider.GetRequiredService<ISessionLogger>();
         var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
-        var terminalVM = new TerminalViewModel(sshService, sessionLogger, settingsService, session);
+        var terminalVM = new TerminalViewModel(sshService, sessionLogger, settingsService, _serviceProvider, session);
         TerminalTabs.Add(terminalVM);
         SelectedTab = terminalVM;
         StatusText = $"Connected to {session.Name}";
+    }
+
+    [RelayCommand]
+    private void OpenLocalTerminal(string shellType = "powershell.exe")
+    {
+        var engine = new LocalTerminalService(shellType);
+        var logger = _serviceProvider.GetRequiredService<ISessionLogger>();
+        var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
+        
+        // We simulate a session for the UI
+        var session = new SessionModel { Name = $"local:{shellType.Replace(".exe", "")}" };
+        var terminalVM = new TerminalViewModel(engine, logger, settingsService, _serviceProvider, session);
+        
+        TerminalTabs.Add(terminalVM);
+        SelectedTab = terminalVM;
+        StatusText = $"Opened local {shellType}";
     }
 
     [RelayCommand]
@@ -251,23 +304,192 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void QuickConnect(string connectionString)
+    {
+        if (string.IsNullOrWhiteSpace(connectionString)) return;
+
+        // basic parsing: user@host:port
+        string user = "root";
+        string host = connectionString;
+        int port = 22;
+
+        if (connectionString.Contains("@"))
+        {
+            var parts = connectionString.Split('@');
+            user = parts[0];
+            host = parts[1];
+        }
+
+        if (host.Contains(":"))
+        {
+            var parts = host.Split(':');
+            host = parts[0];
+            if (int.TryParse(parts[1], out int p)) port = p;
+        }
+
+        var session = new SessionModel
+        {
+            Name = $"{user}@{host}",
+            Host = host,
+            Port = port,
+            Username = user
+        };
+
+        ConnectToSession(session);
+    }
+
+    [RelayCommand]
+    private async Task ExportSessions()
+    {
+        var saveDialog = new Microsoft.Win32.SaveFileDialog
+        {
+            FileName = "omega_sessions.json",
+            Filter = "JSON File|*.json",
+            Title = "Export Sessions"
+        };
+
+        if (saveDialog.ShowDialog() == true)
+        {
+            var sessions = await _sessionService.GetAllSessionsAsync();
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(sessions, Newtonsoft.Json.Formatting.Indented);
+            await File.WriteAllTextAsync(saveDialog.FileName, json);
+            StatusText = $"Exported {sessions.Count} sessions.";
+        }
+    }
+
+    [RelayCommand]
+    private async Task ImportSessions()
+    {
+        var openDialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = "JSON File|*.json",
+            Title = "Import Sessions"
+        };
+
+        if (openDialog.ShowDialog() == true)
+        {
+            try
+            {
+                var json = await File.ReadAllTextAsync(openDialog.FileName);
+                var sessions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<SessionModel>>(json);
+                if (sessions != null)
+                {
+                    foreach (var s in sessions)
+                    {
+                        s.Id = Guid.NewGuid(); // Ensure new IDs
+                        await _sessionService.SaveSessionAsync(s);
+                    }
+                    await LoadSessions();
+                    StatusText = $"Imported {sessions.Count} sessions.";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Import failed: {ex.Message}");
+            }
+        }
+    }
+
+    [RelayCommand]
+    private async Task AddSnippet()
+    {
+        var vm = new SnippetEditViewModel();
+        var win = new OmegaSSH.Views.SnippetEditWindow(vm) { Owner = System.Windows.Application.Current.MainWindow };
+        
+        if (win.ShowDialog() == true && vm.IsSaved)
+        {
+            await _snippetService.SaveSnippetAsync(vm.Result);
+            await LoadSessions(); // This also reloads snippets in current implementation
+        }
+    }
+
+    [RelayCommand]
+    private async Task EditSnippet(SnippetModel snippet)
+    {
+        if (snippet == null) return;
+        var vm = new SnippetEditViewModel(snippet);
+        var win = new OmegaSSH.Views.SnippetEditWindow(vm) { Owner = System.Windows.Application.Current.MainWindow };
+        
+        if (win.ShowDialog() == true && vm.IsSaved)
+        {
+            await _snippetService.SaveSnippetAsync(vm.Result);
+            await LoadSessions();
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeleteSnippet(SnippetModel snippet)
+    {
+        if (snippet == null) return;
+        var result = System.Windows.MessageBox.Show($"Are you sure you want to delete snippet '{snippet.Name}'?", "Confirm Delete", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+        if (result == System.Windows.MessageBoxResult.Yes)
+        {
+            await _snippetService.DeleteSnippetAsync(snippet.Id);
+            await LoadSessions();
+        }
+    }
+
+    [RelayCommand]
     private async Task CreateTestSession()
     {
-        var testSession = new SessionModel { Name = "Localhost", Host = "127.0.0.1", Username = "user", Port = 22 };
+        var testSession = new SessionModel { Name = "Example Session", Host = "127.0.0.1", Username = "user", Port = 22 };
         await _sessionService.SaveSessionAsync(testSession);
-        
-        var testSnippet = new SnippetModel { Name = "Refresh List", Command = "ls -la\r" };
-        await _snippetService.SaveSnippetAsync(testSnippet);
-
         await LoadSessions();
     }
 
     [RelayCommand]
     private async Task ExecuteSnippet(SnippetModel snippet)
     {
-        if (SelectedTab != null)
+        if (IsBroadcastMode)
+        {
+            var tasks = TerminalTabs.Select(t => t.SendInputCommand.ExecuteAsync(snippet.Command));
+            await Task.WhenAll(tasks);
+        }
+        else if (SelectedTab != null)
         {
             await SelectedTab.SendInputCommand.ExecuteAsync(snippet.Command);
         }
+    }
+
+    [RelayCommand]
+    private void ToggleSidebar()
+    {
+        IsSidebarVisible = !IsSidebarVisible;
+    }
+
+    [RelayCommand]
+    private void ToggleSnippetsPanel()
+    {
+        IsSnippetsPanelVisible = !IsSnippetsPanelVisible;
+    }
+
+    [RelayCommand]
+    private void ToggleStatusBar()
+    {
+        IsStatusBarVisible = !IsStatusBarVisible;
+    }
+
+    [RelayCommand]
+    private void ToggleZenMode()
+    {
+        IsZenMode = !IsZenMode;
+        if (IsZenMode)
+        {
+            IsSidebarVisible = false;
+            IsSnippetsPanelVisible = false;
+            IsStatusBarVisible = false;
+        }
+        else
+        {
+            IsSidebarVisible = true;
+            IsSnippetsPanelVisible = true;
+            IsStatusBarVisible = true;
+        }
+    }
+
+    [RelayCommand]
+    private void ToggleBroadcastMode()
+    {
+        IsBroadcastMode = !IsBroadcastMode;
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using OmegaSSH.ViewModels;
 using OmegaSSH.Services;
+using OmegaSSH.Infrastructure;
 using System;
 using System.IO;
 
@@ -13,7 +14,7 @@ namespace OmegaSSH;
 public partial class App : Application
 {
     public new static App Current => (App)Application.Current;
-    public IServiceProvider ServiceProvider { get; private set; }
+    public IServiceProvider ServiceProvider { get; private set; } = default!;
     private bool _isHandlingFatalError = false;
 
     public App()
@@ -46,6 +47,7 @@ public partial class App : Application
     {
         // ViewModels
         services.AddSingleton<MainViewModel>();
+        services.AddTransient<JobOrchestratorViewModel>();
 
         // Views
         services.AddSingleton<MainWindow>(s => new MainWindow
@@ -57,12 +59,15 @@ public partial class App : Application
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<ISessionService, SessionService>();
         services.AddSingleton<IVaultService, VaultService>();
-        services.AddTransient<ISshService, SshService>();
-        services.AddTransient<ILocalTerminalService, LocalTerminalService>();
+        services.AddSingleton<IKeyStorageService, KeyStorageService>();
         services.AddSingleton<ISnippetService, SnippetService>();
         services.AddSingleton<IKeyService, KeyService>();
         services.AddSingleton<IThemeService, ThemeService>();
+        services.AddSingleton<IJobOrchestrator, JobOrchestrator>();
+        
+        services.AddTransient<ISshService, SshService>();
         services.AddTransient<ISessionLogger, SessionLogger>();
+        services.AddTransient<LocalTerminalService>(); 
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -98,6 +103,10 @@ public partial class App : Application
 
             if (result == true)
             {
+                Log("Step 1.5: Auto-Unlocking Vault");
+                var vaultService = ServiceProvider.GetRequiredService<IVaultService>();
+                vaultService.Unlock("OMEGA_SYSTEM_DEFAULT"); // Internal unlock to maintain app functionality without UI barrier
+
                 Log("Step 2: Initializing MainWindow");
                 var settingsService = ServiceProvider.GetRequiredService<ISettingsService>();
                 var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();

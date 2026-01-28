@@ -13,8 +13,14 @@ public class AnsiParser
 {
     private static readonly Regex AnsiRegex = new Regex(@"(\x1B\[[0-9;]*[mK])", RegexOptions.Compiled);
     private Brush _currentForeground = Brushes.LightGray;
+    private readonly SyntaxHighlighter? _highlighter;
 
     private const int MaxLines = 1000;
+
+    public AnsiParser(SyntaxHighlighter? highlighter = null)
+    {
+        _highlighter = highlighter;
+    }
 
     public void ParseAndAppend(RichTextBox richTextBox, string text)
     {
@@ -43,31 +49,45 @@ public class AnsiParser
                     {
                         _currentForeground = GetColorFromAnsi(part, _currentForeground);
                     }
-                    else
-                    {
-                        // Clean up control characters that might confuse RichTextBox
-                        string cleanPart = part.Replace("\r", "");
-                        if (cleanPart.Contains("\n"))
+                        else
                         {
-                            var lines = cleanPart.Split('\n');
-                            for (int i = 0; i < lines.Length; i++)
+                            // Clean up control characters that might confuse RichTextBox
+                            string cleanPart = part.Replace("\r", "");
+                            if (cleanPart.Contains("\n"))
                             {
-                                if (!string.IsNullOrEmpty(lines[i]))
+                                var lines = cleanPart.Split('\n');
+                                for (int i = 0; i < lines.Length; i++)
                                 {
-                                    paragraph.Inlines.Add(new Run(lines[i]) { Foreground = _currentForeground });
+                                    if (!string.IsNullOrEmpty(lines[i]))
+                                    {
+                                        if (_highlighter != null)
+                                        {
+                                            _highlighter.ApplyHighlighting(paragraph, lines[i]);
+                                        }
+                                        else
+                                        {
+                                            paragraph.Inlines.Add(new Run(lines[i]) { Foreground = _currentForeground });
+                                        }
+                                    }
+                                    if (i < lines.Length - 1)
+                                    {
+                                        paragraph = new Paragraph { Margin = new Thickness(0) };
+                                        document.Blocks.Add(paragraph);
+                                    }
                                 }
-                                if (i < lines.Length - 1)
+                            }
+                            else
+                            {
+                                if (_highlighter != null)
                                 {
-                                    paragraph = new Paragraph { Margin = new Thickness(0) };
-                                    document.Blocks.Add(paragraph);
+                                    _highlighter.ApplyHighlighting(paragraph, cleanPart);
+                                }
+                                else
+                                {
+                                    paragraph.Inlines.Add(new Run(cleanPart) { Foreground = _currentForeground });
                                 }
                             }
                         }
-                        else
-                        {
-                            paragraph.Inlines.Add(new Run(cleanPart) { Foreground = _currentForeground });
-                        }
-                    }
                 }
 
                 // Line Limiting: Keep only the last MaxLines

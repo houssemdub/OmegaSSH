@@ -14,6 +14,9 @@ public class SshService : ISshService, IDisposable
     private SftpClient? _sftpClient;
     private ShellStream? _shellStream;
     public event Action<string>? DataReceived;
+    public event Action? Disconnected;
+
+    public bool IsConnected => _client != null && _client.IsConnected;
 
     public async Task ConnectAsync(SessionModel session)
     {
@@ -26,6 +29,7 @@ public class SshService : ISshService, IDisposable
                     new PrivateKeyAuthenticationMethod(session.Username, new PrivateKeyFile(session.PrivateKeyPath)));
 
             _client = new SshClient(connectionInfo);
+            _client.ErrorOccurred += (s, e) => Disconnected?.Invoke();
             _client.Connect();
 
             _sftpClient = new SftpClient(connectionInfo);

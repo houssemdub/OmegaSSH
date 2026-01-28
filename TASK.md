@@ -1,71 +1,52 @@
-# OmegaSSH Development Plan
+# OmegaSSH: The Ultimate Terminal Evolution
 
-## Project Overview
-OmegaSSH is a modern, premium SSH terminal and session manager built with .NET 8 and WPF. It aims to rival tools like Termius and MobaXterm by offering intelligent session management, a multitasking interface, and an integrated toolchain, wrapped in a high-end "Glassmorphism/Cyberpunk" aesthetic.
+## 🚀 Vision
+To build the world's most premium, high-performance SSH client that surpasses industry standards like MobaXterm and Windows Terminal through superior multitasking, hyper-responsive UI, and intelligent command orchestration.
 
-## Feature Roadmap
+---
 
-### Phase 1: Foundation & Architecture
-- [x] **1.1 Project Initialization**: Create .NET 8 WPF solution, configure DI (Dependency Injection), and Logging.
-- [x] **1.2 MVVM Setup**: Implement `CommunityToolkit.Mvvm` for robust state management.
-- [x] **1.3 UI/UX Design System**: 
-    - Create a modern Theme manager (Dark Mode default).
-    - Implement "Glassmorphism" window styles (Acrylic/Mica where supported).
-    - Define core control styles (Buttons, Inputs, Scrollbars) to look premium.
-- [x] **1.4 Application Shell**: 
-    - Build `MainWindow` with a custom chromeless window title bar.
-    - Implement the main layout: Sidebar (Sessions), Main Content (Terminal/Tabs), Status Bar.
+## 🛠️ Phase 9: Hyper-Premium UI & UX Refinement
+- [x] **9.1 Ultra-Sleek Scrollbars**: Replace native scrollbars with custom, ultra-thin, semi-transparent "Liquid" scrollbars that only appear on hover.
+- [x] **9.2 Adaptive Shell Visibility**: Integrated Title bar with WindowChrome for a seamless, distortion-free experience.
+- [x] **9.3 Enhanced Theme Engine**: 
+    - Fixed theme switching logic in settings.
+    - Expanded palette: **Dracula**, **Nord**, **Monokai Pro**, **Cyber-Neon**, and **Retro**.
+- [x] **9.4 Dynamic Layout Management**: 
+    - **Hideable Sidebar**: One-click collapse for the session manager.
+    - **Auto-Hide Snippet Panel**: Context-aware snippet sidebar that slides out only when needed.
+- [x] **9.5 Global Contrast Pass**: Audit all UI components to ensure "Light on Dark" high-contrast legibility.
+- [x] **9.6 Global Top Menu**: Implement a modern, integrated top menu bar for rapid access.
 
-### Phase 2: Intelligent Session Management
-- [x] **2.1 Data Models**: Define `Session`, `Folder`, `Tag`, `Credential` models.
-- [x] **2.2 Persistence Layer**: Implement a JSON-based or SQLite local database for storing sessions securely.
-- [ ] **2.3 Session Browser**: 
-    - Create a Sidebar TreeView with support for nested folders and drag-and-drop.
-    - Implement Search/Filter functionality (Fuzzy matching).
-- [x] **2.4 Connection Logic**: 
-    - Abstract SSH connection logic (using `SSH.NET` or similar).
-    - Handle connection states (Connecting, Connected, Disconnected, Error).
+## ⚡ Phase 10: The "Superior" Terminal Engine
+- [x] **10.1 Multi-Tab Full System**: 
+    - Implement a browser-like tab system with close buttons and modern styling.
+    - **Focus Mode**: One-click to make any terminal pane or tab truly full-screen (Zen Mode).
+- [x] **10.2 JSON Syntax Highlighting Engine**: 
+    - A powerful, regex-based highlighting system configurable via JSON.
+    - Presets for: Logging levels, IP addresses, JSON keys, etc.
+- [x] **10.3 Intelligent Snippet Library**: 
+    - Categorized snippets by OS (Ubuntu/Debian, CentOS/RHEL, Alpine, Windows/PowerShell, Cisco/Network).
+    - Grouped visualization in the sidebar.
+    - Seeded from `DefaultSnippets.json`.
 
-### Phase 3: The Terminal Experience (Multitasking)
-- [x] **3.1 Terminal Emulator Control**: 
-    - Implement or integrate a WPF-compatible Terminal emulator (handling ANSI escape sequences, xterm colors).
-- [x] **3.2 Tabs & Panes**: 
-    - Implement a robust TabManager (Draggable tabs).
-- [x] **3.3 Input Broadcasting**: Logic to send keystrokes to multiple active terminal instances.
+## ⚙️ Phase 11: Enterprise Performance & Orchestration
+- [x] **11.1 Hyper-Load Balancing**: 
+    - **Multi-Commander Orchestrator**: Run one-off commands across multiple sessions in parallel with real-time log aggregation.
+    - **Broadcast Mode**: Toggle real-time input broadcasting to all active terminal tabs.
+- [x] **11.2 Native Terminal Integration**: Deeper local shell integration supporting rich terminal features (PowerShell / CMD).
 
-### Phase 4: Integrated Toolchain
-- [x] **4.1 SFTP Browser**: 
-    - dedicated SFTP view alongside the terminal.
-    - Drag-and-drop file upload/download core logic.
-- [x] **4.2 Port Forwarding Manager**: Visual UI and background logic for managing SSH Tunnels.
-- [x] **4.3 Local Terminal**: Integration of PowerShell as local session type.
+---
 
-### Phase 5: Security & Credentials
-- [x] **5.1 Credential Vault**: 
-    - Secure storage using AES-256.
-- [x] **5.2 SSH Key Manager**: 
-    - Generator for RSA-2048 keys with vault encryption.
+## ✅ Completed Milestones
+- [x] **Foundation**: .NET 8, DI, MVVM. (Phases 1-2)
+- [x] **Core Terminal**: ANSI handling, basic multitasking. (Phase 3)
+- [x] **Toolchain**: SFTP (Drag-drop), Port Forwarding UI. (Phase 4)
+- [x] **Security**: Key Manager, Master Password (optional). (Phase 5)
+- [x] **Power Features**: Search (Ctrl+F), Reconnect Logic, Multi-Commander. (Phase 8-11)
+- [x] **Aesthetics Pass**: Corporate Cyberpunk UI overhaul. (Phase 9)
 
-### Phase 6: Polish & Advanced Features
-- [x] **6.1 Scripting/Snippets**: Library for saved snippets and quick execution.
-- [x] **6.2 Theming**: User-configurable themes (Cyberpunk, Retro, Nord).
-- [x] **6.3 Visual Polish**: Added transitions and hover animations.
-
-### Phase 7: Stability & Advanced Integration
-- [x] **7.1 Splash Screen**: Cyberpunk initialization screen with dependency checks.
-- [x] **7.2 Settings Engine**: Persistence of user preferences (Theme, Window Size) via JSON.
-- [x] **7.3 Global Error Handling**: Custom-styled message boxes and crash logging.
-
-## Current Progress
-1. Hierarchical Session Browser.
-2. ANSI Terminal with RichText rendering.
-3. Tabbed Multitasking & Broadcast.
-4. Integrated SFTP & Key Manager.
-5. Command Snippets & Theme Engine.
-6. AES Vault & JSON Settings.
-7. Resilience: Global Error Handling & Splash Screen.
-
-## Next Steps
-1. Performance: Optimize rendering for high-output streams.
-2. Advanced Scripting: Python/JS scripting for automated tasks.
-3. Cloud Sync: Encrypted sync for sessions/snippets.
+## 📡 Live Status
+- **Reliability**: Reconnection logic active.
+- **Multitasking**: Split-View & Tab Management fully operational.
+- **Aesthetics**: Premium Corporate Cyberpunk aesthetic finalized.
+- **Engine**: Hybrid SSH + Local Terminal support enabled.
