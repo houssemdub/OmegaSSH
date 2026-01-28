@@ -60,7 +60,9 @@
                         <!-- Search Box -->
                         <Border Padding="15">
                             <Grid>
-                                <TextBox Style="{StaticResource ModernTextBox}" x:Name="SearchBox" Tag="Search sessions..." />
+                                <TextBox Style="{StaticResource ModernTextBox}" x:Name="SearchBox" 
+                                         Text="{Binding SessionFilter, UpdateSourceTrigger=PropertyChanged}"
+                                         Tag="Search sessions..." />
                                 <fa:ImageAwesome Icon="Search" Width="12" Foreground="{StaticResource TextDimBrush}" HorizontalAlignment="Right" Margin="0,0,10,0" IsHitTestVisible="False"/>
                             </Grid>
                         </Border>
@@ -70,7 +72,7 @@
                             <StackPanel Margin="10,0">
                                 <Grid>
                                     <TextBlock Text="SESSIONS" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="5,10" FontWeight="Bold"/>
-                                    <Button Style="{StaticResource IconButton}" Command="{Binding CreateTestSessionCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="Add Test Session">
+                                    <Button Style="{StaticResource IconButton}" Command="{Binding AddSessionCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="Add New Session">
                                         <fa:ImageAwesome Icon="Plus" Width="10" Foreground="{StaticResource TextDimBrush}"/>
                                     </Button>
                                 </Grid>
@@ -89,6 +91,16 @@
                                         <Style TargetType="TreeViewItem">
                                             <EventSetter Event="MouseDoubleClick" Handler="SessionTreeItem_DoubleClick"/>
                                             <Setter Property="IsExpanded" Value="True"/>
+                                            <Setter Property="ContextMenu">
+                                                <Setter.Value>
+                                                    <ContextMenu Style="{StaticResource ModernContextMenu}">
+                                                        <MenuItem Header="Edit Connection" Command="{Binding DataContext.EditSessionCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding Session}"/>
+                                                        <MenuItem Header="Duplicate" Command="{Binding DataContext.DuplicateSessionCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding Session}"/>
+                                                        <Separator/>
+                                                        <MenuItem Header="Delete" Command="{Binding DataContext.DeleteSessionCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding Session}" Foreground="#FF4444"/>
+                                                    </ContextMenu>
+                                                </Setter.Value>
+                                            </Setter>
                                         </Style>
                                     </TreeView.ItemContainerStyle>
                                 </TreeView>

@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using OmegaSSH.Models;
 using OmegaSSH.Services;
 
@@ -44,6 +45,11 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isKeyManagerActive;
+
+    [ObservableProperty]
+    private string _sessionFilter = string.Empty;
+
+    partial void OnSessionFilterChanged(string value) => FilterSessions(value);
 
     public MainViewModel(ISessionService sessionService, ISnippetService snippetService, ISettingsService settingsService, IServiceProvider serviceProvider, IKeyService keyService, IVaultService vaultService, IThemeService themeService)
     {
@@ -108,12 +114,40 @@ public partial class MainViewModel : ObservableObject
             
             if (Sessions.Count == 0)
             {
-                StatusText = "No sessions found. Create one!";
+                StatusText = "No sessions found. Add your first connection!";
             }
         }
         catch (Exception ex)
         {
-            OmegaSSH.Views.NotificationWindow.Show($"Failed to load sessions: {ex.Message}", "SYNC ERROR", true);
+            StatusText = $"Error loading sessions: {ex.Message}";
+        }
+    }
+
+    private void FilterSessions(string filter)
+    {
+        if (string.IsNullOrWhiteSpace(filter))
+        {
+            _ = LoadSessions(); // Reload full tree
+            return;
+        }
+
+        var lowerFilter = filter.ToLower();
+        var filteredSessions = Sessions.Where(s => 
+            s.Name.ToLower().Contains(lowerFilter) || 
+            s.Host.ToLower().Contains(lowerFilter) ||
+            (s.Folder?.ToLower().Contains(lowerFilter) ?? false)).ToList();
+
+        SessionTree.Clear();
+        foreach (var s in filteredSessions)
+        {
+            var folderPath = s.Folder ?? "General";
+            var folderNode = SessionTree.FirstOrDefault(t => t.Name == folderPath && t.IsFolder);
+            if (folderNode == null)
+            {
+                folderNode = new SessionTreeItemViewModel(folderPath, true);
+                SessionTree.Add(folderNode);
+            }
+            folderNode.Children.Add(new SessionTreeItemViewModel(s.Name, false, s));
         }
     }
 
@@ -138,9 +172,60 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void AddTab()
+    private async Task AddSession()
     {
-        // For now, just a placeholder or local terminal
+        var vm = new SessionEditViewModel();
+        var win = new OmegaSSH.Views.SessionEditWindow(vm) { Owner = System.Windows.Application.Current.MainWindow };
+        
+        if (win.ShowDialog() == true && vm.IsSaved)
+        {
+            await _sessionService.SaveSessionAsync(vm.Result);
+            await LoadSessions();
+        }
+    }
+
+    [RelayCommand]
+    private async Task EditSession(SessionModel session)
+    {
+        if (session == null) return;
+        var vm = new SessionEditViewModel(session);
+        var win = new OmegaSSH.Views.SessionEditWindow(vm) { Owner = System.Windows.Application.Current.MainWindow };
+        
+        if (win.ShowDialog() == true && vm.IsSaved)
+        {
+            await _sessionService.SaveSessionAsync(vm.Result);
+            await LoadSessions();
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeleteSession(SessionModel session)
+    {
+        if (session == null) return;
+        var result = System.Windows.MessageBox.Show($"Are you sure you want to delete session '{session.Name}'?", "Confirm Delete", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+        if (result == System.Windows.MessageBoxResult.Yes)
+        {
+            await _sessionService.DeleteSessionAsync(session.Id);
+            await LoadSessions();
+        }
+    }
+
+    [RelayCommand]
+    private async Task DuplicateSession(SessionModel session)
+    {
+        if (session == null) return;
+        var clone = new SessionModel
+        {
+            Name = session.Name + " (Copy)",
+            Host = session.Host,
+            Port = session.Port,
+            Username = session.Username,
+            Password = session.Password,
+            PrivateKeyPath = session.PrivateKeyPath,
+            Folder = session.Folder
+        };
+        await _sessionService.SaveSessionAsync(clone);
+        await LoadSessions();
     }
 
     [RelayCommand]

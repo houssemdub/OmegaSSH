@@ -40,6 +40,11 @@ public class SessionService : ISessionService
 
     public async Task SaveSessionAsync(SessionModel session)
     {
+        if (_sessions.Count == 0 && File.Exists(_storagePath))
+        {
+            await GetAllSessionsAsync();
+        }
+
         var existing = _sessions.FirstOrDefault(s => s.Id == session.Id);
         if (existing != null)
         {
@@ -51,6 +56,11 @@ public class SessionService : ISessionService
 
     public async Task DeleteSessionAsync(Guid sessionId)
     {
+        if (_sessions.Count == 0 && File.Exists(_storagePath))
+        {
+            await GetAllSessionsAsync();
+        }
+
         var session = _sessions.FirstOrDefault(s => s.Id == sessionId);
         if (session != null)
         {
