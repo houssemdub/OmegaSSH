@@ -58,17 +58,31 @@
                             <TextBlock Text="SSH" FontFamily="Segoe UI" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="{StaticResource PrimaryAccentBrush}"/>
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True" Margin="0,0,5,0">
-                            <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Click="Minimize_Click"/>
-                            <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Click="Maximize_Click"/>
-                            <Button Content="" FontFamily="Segoe MDL2 Assets" FontSize="10" Background="Transparent" Foreground="#FF5555" Click="Close_Click">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True" Margin="0,0,5,0" VerticalAlignment="Top">
+                            <Button Style="{StaticResource IconButton}" Click="Minimize_Click" Width="40" Height="30">
+                                <fa:ImageAwesome Icon="Minus" Width="10" Foreground="{StaticResource TextDimBrush}"/>
+                            </Button>
+                            <Button Style="{StaticResource IconButton}" Click="Maximize_Click" Width="40" Height="30">
+                                <fa:ImageAwesome Icon="WindowMaximize" Width="10" Foreground="{StaticResource TextDimBrush}"/>
+                            </Button>
+                            <Button Click="Close_Click" Width="40" Height="30" Background="Transparent" BorderThickness="0">
                                 <Button.Style>
-                                    <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="#33FF0000"/>
-                                            </Trigger>
-                                        </Style.Triggers>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="border" Background="Transparent" CornerRadius="0,12,0,0">
+                                                        <fa:ImageAwesome Icon="Close" Width="10" Foreground="{StaticResource TextDimBrush}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="#E81123"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
                                     </Style>
                                 </Button.Style>
                             </Button>
@@ -76,34 +90,44 @@
                     </Grid>
 
                     <!-- Integrated Menu -->
-                    <Menu Grid.Row="1" Background="Transparent" Foreground="{StaticResource TextBrush}" Margin="10,0">
-                        <MenuItem Header="_FILE">
-                            <MenuItem Header="_New Session" Command="{Binding AddSessionCommand}">
+                    <Menu Grid.Row="1" Background="Transparent" Foreground="{StaticResource TextBrush}" Margin="10,0" WindowChrome.IsHitTestVisibleInChrome="True" VerticalAlignment="Center">
+                        <MenuItem Header="FILE">
+                            <MenuItem Header="New Session" Command="{Binding AddSessionCommand}">
                                 <MenuItem.Icon><fa:ImageAwesome Icon="Plus" Width="10" Foreground="{StaticResource PrimaryAccentBrush}"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="New _Local Terminal">
+                            <MenuItem Header="New Local Terminal">
                                 <MenuItem.Icon><fa:ImageAwesome Icon="Desktop" Width="10" Foreground="{StaticResource PrimaryAccentBrush}"/></MenuItem.Icon>
-                                <MenuItem Header="_PowerShell" Command="{Binding OpenLocalTerminalCommand}" CommandParameter="powershell.exe"/>
-                                <MenuItem Header="_Command Prompt" Command="{Binding OpenLocalTerminalCommand}" CommandParameter="cmd.exe"/>
+                                <MenuItem Header="PowerShell" Command="{Binding OpenLocalTerminalCommand}" CommandParameter="powershell.exe"/>
+                                <MenuItem Header="Command Prompt" Command="{Binding OpenLocalTerminalCommand}" CommandParameter="cmd.exe"/>
                             </MenuItem>
                             <Separator/>
-                            <MenuItem Header="_Import" Command="{Binding ImportSessionsCommand}"/>
-                            <MenuItem Header="_Export" Command="{Binding ExportSessionsCommand}"/>
+                            <MenuItem Header="Import Sessions" Command="{Binding ImportSessionsCommand}">
+                                <MenuItem.Icon><fa:ImageAwesome Icon="Download" Width="10" Foreground="{StaticResource SecondaryAccentBrush}"/></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Export Sessions" Command="{Binding ExportSessionsCommand}">
+                                <MenuItem.Icon><fa:ImageAwesome Icon="Upload" Width="10" Foreground="{StaticResource SecondaryAccentBrush}"/></MenuItem.Icon>
+                            </MenuItem>
                             <Separator/>
-                            <MenuItem Header="E_xit" Click="Close_Click"/>
+                            <MenuItem Header="Exit" Click="Close_Click">
+                                <MenuItem.Icon><fa:ImageAwesome Icon="PowerOff" Width="10" Foreground="#FF5555"/></MenuItem.Icon>
+                            </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="_VIEW">
-                            <MenuItem Header="Sidebar" Command="{Binding ToggleSidebarCommand}" IsCheckable="True" IsChecked="{Binding IsSidebarVisible}"/>
-                            <MenuItem Header="Snippets" Command="{Binding ToggleSnippetsPanelCommand}" IsCheckable="True" IsChecked="{Binding IsSnippetsPanelVisible}"/>
-                            <MenuItem Header="Status Bar" Command="{Binding ToggleStatusBarCommand}" IsCheckable="True" IsChecked="{Binding IsStatusBarVisible}"/>
+                        <MenuItem Header="VIEW">
+                            <MenuItem Header="Sidebar" Command="{Binding ToggleSidebarCommand}" IsChecked="{Binding IsSidebarVisible, Mode=OneWay}"/>
+                            <MenuItem Header="Snippets" Command="{Binding ToggleSnippetsPanelCommand}" IsChecked="{Binding IsSnippetsPanelVisible, Mode=OneWay}"/>
+                            <MenuItem Header="Status Bar" Command="{Binding ToggleStatusBarCommand}" IsChecked="{Binding IsStatusBarVisible, Mode=OneWay}"/>
                             <Separator/>
-                            <MenuItem Header="_Zen Mode" Command="{Binding ToggleZenModeCommand}" InputGestureText="F11"/>
+                            <MenuItem Header="Zen Mode" Command="{Binding ToggleZenModeCommand}" InputGestureText="F11" IsChecked="{Binding IsZenMode, Mode=OneWay}"/>
                         </MenuItem>
-                        <MenuItem Header="_ORCHESTRATION">
-                            <MenuItem Header="Key Manager" Command="{Binding OpenKeyManagerCommand}"/>
-                            <MenuItem Header="Multi-Commander" Command="{Binding OpenMultiCommanderCommand}"/>
+                        <MenuItem Header="ORCHESTRATION">
+                            <MenuItem Header="Key Manager" Command="{Binding OpenKeyManagerCommand}">
+                                <MenuItem.Icon><fa:ImageAwesome Icon="Shield" Width="10" Foreground="{StaticResource HighlightAccentBrush}"/></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Multi-Commander" Command="{Binding OpenMultiCommanderCommand}">
+                                <MenuItem.Icon><fa:ImageAwesome Icon="Bolt" Width="10" Foreground="{StaticResource PrimaryAccentBrush}"/></MenuItem.Icon>
+                            </MenuItem>
                             <Separator/>
-                            <MenuItem Header="Broadcast Mode" Command="{Binding ToggleBroadcastModeCommand}" IsCheckable="True" IsChecked="{Binding IsBroadcastMode}"/>
+                            <MenuItem Header="Broadcast Mode" Command="{Binding ToggleBroadcastModeCommand}" IsChecked="{Binding IsBroadcastMode, Mode=OneWay}"/>
                         </MenuItem>
                     </Menu>
                 </Grid>

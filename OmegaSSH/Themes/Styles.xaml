@@ -342,6 +342,54 @@
         </Setter>
     </Style>
 
+    <!-- MENU & MENUITEM OVERHAUL -->
+    <Style x:Key="ModernMenuItem" TargetType="MenuItem">
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Grid x:Name="PART_Grid">
+                        <Border x:Name="PART_Border" Background="Transparent" CornerRadius="4"/>
+                        <StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}">
+                            <Grid Width="16" Margin="0,0,8,0">
+                                <fa:ImageAwesome x:Name="PART_Check" Icon="Check" Width="10" Foreground="{StaticResource PrimaryAccentBrush}" Visibility="Collapsed"/>
+                                <ContentPresenter x:Name="PART_Icon" ContentSource="Icon" Width="14" Visibility="Visible" VerticalAlignment="Center"/>
+                            </Grid>
+                            <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="Slide" Placement="Right">
+                            <Border Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="2" Margin="4,0">
+                                <ScrollViewer CanContentScroll="true">
+                                    <ItemsPresenter Margin="2"/>
+                                </ScrollViewer>
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="15" Opacity="0.4" ShadowDepth="0" Color="Black"/>
+                                </Border.Effect>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PART_Check" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="Role" Value="TopLevelHeader">
+                            <Setter TargetName="PART_Popup" Property="Placement" Value="Bottom"/>
+                            <Setter TargetName="PART_Check" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Null}">
+                            <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource GlassBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- CONTEXT MENU OVERHAUL -->
     <Style x:Key="ModernContextMenu" TargetType="ContextMenu">
         <Setter Property="Background" Value="{StaticResource SidebarBrush}"/>
@@ -362,6 +410,12 @@
         </Setter>
     </Style>
 
+    <Style TargetType="Menu">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style TargetType="MenuItem" BasedOn="{StaticResource ModernMenuItem}"/>
     <Style TargetType="ContextMenu" BasedOn="{StaticResource ModernContextMenu}"/>
 
 </ResourceDictionary>
