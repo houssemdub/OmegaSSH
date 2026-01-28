@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:OmegaSSH"
         xmlns:views="clr-namespace:OmegaSSH.Views"
         xmlns:vm="clr-namespace:OmegaSSH.ViewModels"
+        xmlns:infra="clr-namespace:OmegaSSH.Infrastructure"
         mc:Ignorable="d"
         Title="OmegaSSH" Height="700" Width="1100"
         Background="{StaticResource BgBrush}"
@@ -79,6 +80,8 @@
                                 
                                 <TreeView ItemsSource="{Binding SessionTree}" Background="Transparent" BorderThickness="0" x:Name="SessionTreeView">
                                     <TreeView.Resources>
+                                        <infra:BindingProxy x:Key="MainProxy" Data="{Binding}"/>
+                                        
                                         <HierarchicalDataTemplate DataType="{x:Type vm:SessionTreeItemViewModel}" ItemsSource="{Binding Children}">
                                             <StackPanel Orientation="Horizontal">
                                                 <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource CyberYellowBrush}" Margin="0,0,8,0" Visibility="{Binding IsFolder, Converter={StaticResource BooleanToVisibilityConverter}}"/>
@@ -94,10 +97,20 @@
                                             <Setter Property="ContextMenu">
                                                 <Setter.Value>
                                                     <ContextMenu Style="{StaticResource ModernContextMenu}">
-                                                        <MenuItem Header="Edit Connection" Command="{Binding DataContext.EditSessionCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding Session}"/>
-                                                        <MenuItem Header="Duplicate" Command="{Binding DataContext.DuplicateSessionCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding Session}"/>
-                                                        <Separator/>
-                                                        <MenuItem Header="Delete" Command="{Binding DataContext.DeleteSessionCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding Session}" Foreground="#FF4444"/>
+                                                        <MenuItem Header="Edit Connection" 
+                                                                  Command="{Binding Data.EditSessionCommand, Source={StaticResource MainProxy}}" 
+                                                                  CommandParameter="{Binding Session}"
+                                                                  Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                                        <MenuItem Header="Duplicate" 
+                                                                  Command="{Binding Data.DuplicateSessionCommand, Source={StaticResource MainProxy}}" 
+                                                                  CommandParameter="{Binding Session}"
+                                                                  Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                                        <Separator Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                                        <MenuItem Header="Delete" 
+                                                                  Command="{Binding Data.DeleteSessionCommand, Source={StaticResource MainProxy}}" 
+                                                                  CommandParameter="{Binding Session}" 
+                                                                  Foreground="#FF4444"
+                                                                  Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
                                                     </ContextMenu>
                                                 </Setter.Value>
                                             </Setter>
