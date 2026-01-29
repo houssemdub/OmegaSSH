@@ -86,6 +86,18 @@ public class SshService : ISshService, IDisposable
         });
     }
 
+    public async Task DeleteFileAsync(string remotePath)
+    {
+        if (_isDisposed || _sftpClient == null || !_sftpClient.IsConnected) return;
+        await Task.Run(() => _sftpClient.DeleteFile(remotePath));
+    }
+
+    public async Task DeleteDirectoryAsync(string remotePath)
+    {
+        if (_isDisposed || _sftpClient == null || !_sftpClient.IsConnected) return;
+        await Task.Run(() => _sftpClient.DeleteDirectory(remotePath));
+    }
+
     public void CreateTunnel(TunnelModel tunnel)
     {
         if (_client == null || !_client.IsConnected) return;

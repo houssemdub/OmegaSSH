@@ -17,8 +17,8 @@
         <WindowChrome CaptionHeight="40" GlassFrameThickness="0" CornerRadius="0" ResizeBorderThickness="8"/>
     </WindowChrome.WindowChrome>
 
-    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10">
-        <Grid Margin="20">
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="4">
+        <Grid Margin="15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -26,9 +26,9 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <fa:ImageAwesome Icon="Gear" Width="20" Foreground="{DynamicResource PrimaryAccentBrush}" Margin="0,0,12,0"/>
-                <TextBlock Text="APPLICATION SETTINGS" FontSize="18" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                <fa:ImageAwesome Icon="Gear" Width="14" Foreground="{DynamicResource PrimaryAccentBrush}" Margin="0,0,10,0"/>
+                <TextBlock Text="SETTINGS" FontSize="14" FontWeight="Bold"/>
             </StackPanel>
 
             <!-- Tabs/Sections -->
@@ -57,18 +57,15 @@
                 </TabControl.Resources>
                 
                 <TabItem Header="Appearance">
-                    <ScrollViewer Margin="0,20,0,0">
+                    <ScrollViewer Margin="0,15,0,0">
                         <StackPanel>
-                            <TextBlock Text="Theme" Style="{StaticResource ModernLabel}"/>
-                            <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding Theme}" Style="{StaticResource ModernComboBox}"/>
+                            <TextBlock Text="Terminal Font" Style="{StaticResource ModernLabel}"/>
+                            <TextBox Text="{Binding TerminalFontFamily}" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
 
-                            <TextBlock Text="Terminal Font" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
-                            <TextBox Text="{Binding TerminalFontFamily}" Style="{StaticResource ModernTextBox}"/>
-
-                            <TextBlock Text="Font Size" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
-                            <TextBox Text="{Binding TerminalFontSize}" Style="{StaticResource ModernTextBox}"/>
+                            <TextBlock Text="Font Size" Style="{StaticResource ModernLabel}"/>
+                            <TextBox Text="{Binding TerminalFontSize}" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
                             
-                            <CheckBox IsChecked="{Binding EnableAnsiColors}" Content="Enable ANSI Colors" Margin="0,15,0,0" Foreground="{DynamicResource TextBrush}"/>
+                            <CheckBox IsChecked="{Binding EnableAnsiColors}" Content="Enable ANSI Colors" Foreground="{DynamicResource TextBrush}"/>
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>

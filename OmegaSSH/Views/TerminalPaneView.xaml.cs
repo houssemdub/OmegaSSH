@@ -17,15 +17,7 @@ public partial class TerminalPaneView : UserControl
         InitializeComponent();
         
         var highlighter = new SyntaxHighlighter();
-        // Resolve path relative to app execution - for development, we use the absolute path or check if it exists
-        var highlightPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Highlights", "default.json");
-        if (!System.IO.File.Exists(highlightPath))
-        {
-            // Try relative to project root or something
-            highlightPath = @"d:\Visual Studio Projects\C#\OmegaSSH\OmegaSSH\Resources\Highlights\default.json";
-        }
-        
-        highlighter.LoadSchema(highlightPath);
+        highlighter.LoadSchema(@"d:\Visual Studio Projects\C#\OmegaSSH\ssh-syntax-highlighting.json");
         _ansiParser = new AnsiParser(highlighter);
 
         this.DataContextChanged += TerminalPaneView_DataContextChanged;
@@ -37,18 +29,35 @@ public partial class TerminalPaneView : UserControl
         {
             oldVm.DataReceived -= Vm_DataReceived;
             oldVm.SearchResultFound -= Vm_SearchResultFound;
+            oldVm.ClearRequested -= Vm_ClearRequested;
         }
 
         if (e.NewValue is TerminalPaneViewModel vm)
         {
             vm.DataReceived += Vm_DataReceived;
             vm.SearchResultFound += Vm_SearchResultFound;
+            vm.ClearRequested += Vm_ClearRequested;
 
             if (!string.IsNullOrEmpty(vm.TerminalOutput))
             {
                 OutputBox.Document.Blocks.Clear();
                 Vm_DataReceived(vm.TerminalOutput);
             }
+        }
+    }
+
+    private void Vm_ClearRequested()
+    {
+        OutputBox.Document.Blocks.Clear();
+    }
+
+    private async void Paste_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not TerminalPaneViewModel vm) return;
+        if (Clipboard.ContainsText())
+        {
+            var text = Clipboard.GetText();
+            await vm.SendInputCommand.ExecuteAsync(text);
         }
     }
 

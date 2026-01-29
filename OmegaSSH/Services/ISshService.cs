@@ -14,6 +14,8 @@ public interface ISshService : IShellEngine
     Task<List<SftpEntryModel>> ListDirectoryAsync(string path);
     Task DownloadFileAsync(string remotePath, string localPath);
     Task UploadFileAsync(string localPath, string remotePath);
+    Task DeleteFileAsync(string remotePath);
+    Task DeleteDirectoryAsync(string remotePath);
     void CreateTunnel(TunnelModel tunnel);
     
     // IShellEngine compatibility

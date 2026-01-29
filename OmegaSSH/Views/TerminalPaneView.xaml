@@ -19,6 +19,32 @@
                                Background="#050505" Foreground="{DynamicResource TextBrush}"
                                PreviewKeyDown="InputBox_KeyDown"
                                BorderThickness="0" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Padding="15">
+                    <RichTextBox.ContextMenu>
+                        <ContextMenu Style="{StaticResource ModernContextMenu}">
+                            <MenuItem Header="Copy" Command="ApplicationCommands.Copy">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="Copy" Width="12"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator/>
+                            <MenuItem Header="Paste to Terminal" Click="Paste_Click">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="Paste" Width="12"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator/>
+                            <MenuItem Header="Clear Terminal" Command="{Binding ClearCommand}">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="Eraser" Width="12"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Interrupt (Ctrl+C)" Command="{Binding InterruptCommand}">
+                                <MenuItem.Icon>
+                                    <fa:ImageAwesome Icon="StopCircle" Width="12" Foreground="#FF5555"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </RichTextBox.ContextMenu>
                     <FlowDocument PagePadding="0"/>
                 </RichTextBox>
 
@@ -33,9 +59,26 @@
                         <fa:ImageAwesome Icon="ChevronRight" Width="10" Foreground="{DynamicResource PrimaryAccentBrush}" HorizontalAlignment="Left" Margin="5,0,10,0" Opacity="0.5"/>
                         
                         <TextBox x:Name="InputBox" Grid.Column="1"
-                               Style="{StaticResource ModernTextBox}" 
-                               PreviewKeyDown="InputBox_KeyDown"
-                               Tag="Execute command..." Padding="5,4,10,4" BorderThickness="0" Background="Transparent" Height="34"/>
+                                Style="{StaticResource ModernTextBox}" 
+                                PreviewKeyDown="InputBox_KeyDown"
+                                Tag="Execute command..." Padding="5,4,10,4" BorderThickness="0" Background="Transparent" Height="34">
+                            <TextBox.ContextMenu>
+                                <ContextMenu Style="{StaticResource ModernContextMenu}">
+                                    <MenuItem Header="Paste" Command="ApplicationCommands.Paste">
+                                        <MenuItem.Icon>
+                                            <fa:ImageAwesome Icon="Paste" Width="12"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Copy" Command="ApplicationCommands.Copy">
+                                        <MenuItem.Icon>
+                                            <fa:ImageAwesome Icon="Copy" Width="12"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator/>
+                                    <MenuItem Header="Select All" Command="ApplicationCommands.SelectAll"/>
+                                </ContextMenu>
+                            </TextBox.ContextMenu>
+                        </TextBox>
 
                         <Button Grid.Column="2" Style="{StaticResource IconButton}" 
                                 Command="{Binding InterruptCommand}"

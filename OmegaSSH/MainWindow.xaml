@@ -39,24 +39,20 @@
                 <RowDefinition Height="Auto"/> <!-- Status Bar -->
             </Grid.RowDefinitions>
 
-            <!-- PREMIUM HEADER -->
-            <Border Grid.Row="0" Background="{DynamicResource TitleBarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" CornerRadius="{DynamicResource MainCornerRadius}">
+            <!-- SIMPLE DARK HEADER -->
+            <Border Grid.Row="0" Background="{DynamicResource TitleBarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="34"/>
+                        <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
 
                     <!-- Title Bar -->
                     <Grid Grid.Row="0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
-                            <fa:ImageAwesome Icon="Terminal" Width="14" Foreground="{DynamicResource PrimaryAccentBrush}" Margin="0,0,12,0">
-                                <fa:ImageAwesome.Effect>
-                                    <DropShadowEffect BlurRadius="10" Color="{DynamicResource AccentColor}" Opacity="0.5" ShadowDepth="0"/>
-                                </fa:ImageAwesome.Effect>
-                            </fa:ImageAwesome>
-                            <TextBlock Text="OMEGA" FontFamily="{DynamicResource MainFontFamily}" FontWeight="Light" FontSize="14" VerticalAlignment="Center" Opacity="0.7" Foreground="{DynamicResource TextBrush}"/>
-                            <TextBlock Text="SSH" FontFamily="{DynamicResource MainFontFamily}" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryAccentBrush}"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0">
+                            <fa:ImageAwesome Icon="Terminal" Width="12" Foreground="{DynamicResource PrimaryAccentBrush}" Margin="0,0,8,0"/>
+                            <TextBlock Text="OMEGA" FontWeight="Light" FontSize="12" VerticalAlignment="Center" Opacity="0.5" Foreground="{DynamicResource TextBrush}"/>
+                            <TextBlock Text="SSH" FontWeight="Bold" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryAccentBrush}"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True" Margin="0,0,5,0" VerticalAlignment="Top">
@@ -72,13 +68,14 @@
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="border" Background="Transparent" CornerRadius="0,12,0,0">
+                                                    <Border x:Name="border" Background="Transparent" CornerRadius="0,4,0,0">
                                                         <fa:ImageAwesome Icon="Close" Width="10" Foreground="{DynamicResource TextDimBrush}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter TargetName="border" Property="Background" Value="#E81123"/>
                                                             <Setter Property="Foreground" Value="White"/>
+                                                            <Setter TargetName="border" Property="CornerRadius" Value="0,4,0,0"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -193,6 +190,32 @@
                             <TreeView.Resources>
                                 <HierarchicalDataTemplate DataType="{x:Type vm:SessionTreeItemViewModel}" ItemsSource="{Binding Children}">
                                     <Border CornerRadius="6" Padding="8,4" Margin="0,1" Cursor="Hand" x:Name="itemBorder">
+                                        <Border.ContextMenu>
+                                            <ContextMenu Style="{StaticResource ModernContextMenu}">
+                                                <MenuItem Header="Connect" Command="{Binding Data.ConnectToSessionCommand, Source={StaticResource MainProxy}}" CommandParameter="{Binding Session}" Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Link" Width="12"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <Separator Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                                <MenuItem Header="Edit" Command="{Binding Data.EditSessionCommand, Source={StaticResource MainProxy}}" CommandParameter="{Binding Session}" Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Edit" Width="12"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Duplicate" Command="{Binding Data.DuplicateSessionCommand, Source={StaticResource MainProxy}}" CommandParameter="{Binding Session}" Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Copy" Width="12"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <Separator Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                                <MenuItem Header="Delete" Command="{Binding Data.DeleteSessionCommand, Source={StaticResource MainProxy}}" CommandParameter="{Binding Session}" Visibility="{Binding IsFolder, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Trash" Width="12" Foreground="#FF5555"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </Border.ContextMenu>
                                         <StackPanel Orientation="Horizontal">
                                             <Grid Width="16" Margin="0,0,10,0">
                                                 <fa:ImageAwesome Icon="Folder" Width="14" Foreground="{DynamicResource HighlightAccentBrush}" Visibility="{Binding IsFolder, Converter={StaticResource BooleanToVisibilityConverter}}"/>
@@ -254,18 +277,7 @@
                                         <fa:ImageAwesome Icon="Shield" Width="14" Opacity="0.5"/>
                                     </Button>
                                     <Border Width="1" Background="{DynamicResource BorderBrush}" Margin="8,4"/>
-                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <Button Background="#58A6FF" ToolTip="OmegaSSH" Command="{Binding ChangeThemeCommand}" CommandParameter="omegassh" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0"/>
-                                        <Button Background="#1C1C1C" ToolTip="MobaXterm" Command="{Binding ChangeThemeCommand}" CommandParameter="mobaxtrem" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0">
-                                            <fa:ImageAwesome Icon="Terminal" Width="8" Foreground="#00A2E8"/>
-                                        </Button>
-                                        <Button Background="#0D1117" ToolTip="GitHub Dark" Command="{Binding ChangeThemeCommand}" CommandParameter="github" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0">
-                                            <fa:ImageAwesome Icon="Github" Width="8" Foreground="White"/>
-                                        </Button>
-                                        <Button Background="#0055E1" ToolTip="WinXP Luna" Command="{Binding ChangeThemeCommand}" CommandParameter="winxp" Style="{StaticResource RoundThemeButton}">
-                                            <fa:ImageAwesome Icon="Windows" Width="8" Foreground="#3B913B"/>
-                                        </Button>
-                                    </StackPanel>
+                                    <TextBlock Text="OMEGA v1.2" VerticalAlignment="Center" FontSize="10" Opacity="0.3" FontWeight="Bold"/>
                                 </StackPanel>
                             </Grid>
                         </Border>
@@ -404,6 +416,26 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Border CornerRadius="8" Background="{DynamicResource SurfaceBrush}" Padding="15,12" Margin="0,0,0,8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Cursor="Hand">
+                                        <Border.ContextMenu>
+                                            <ContextMenu Style="{StaticResource ModernContextMenu}">
+                                                <MenuItem Header="Run Snippet" Command="{Binding Data.ExecuteSnippetCommand, Source={StaticResource MainProxy}}" CommandParameter="{Binding}">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Play" Width="12" Foreground="{DynamicResource PrimaryAccentBrush}"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <Separator/>
+                                                <MenuItem Header="Edit" Command="{Binding Data.EditSnippetCommand, Source={StaticResource MainProxy}}" CommandParameter="{Binding}">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Edit" Width="12"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Delete" Command="{Binding Data.DeleteSnippetCommand, Source={StaticResource MainProxy}}" CommandParameter="{Binding}">
+                                                    <MenuItem.Icon>
+                                                        <fa:ImageAwesome Icon="Trash" Width="12" Foreground="#FF5555"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </Border.ContextMenu>
                                         <Border.InputBindings>
                                             <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Data.ExecuteSnippetCommand, Source={StaticResource MainProxy}}" CommandParameter="{Binding}"/>
                                         </Border.InputBindings>

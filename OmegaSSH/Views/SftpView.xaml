@@ -39,6 +39,20 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid x:Name="ItemGrid" Background="Transparent" VerticalAlignment="Center" Margin="0,2">
+                        <Grid.ContextMenu>
+                            <ContextMenu Style="{StaticResource ModernContextMenu}">
+                                <MenuItem Header="Download" Command="{Binding DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}">
+                                    <MenuItem.Icon><fa:ImageAwesome Icon="Download" Width="10"/></MenuItem.Icon>
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem Header="Delete" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}">
+                                    <MenuItem.Icon><fa:ImageAwesome Icon="Trash" Width="10" Foreground="#FF5555"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Refresh" Command="{Binding DataContext.RefreshCommand, RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                    <MenuItem.Icon><fa:ImageAwesome Icon="Refresh" Width="10"/></MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="*"/>
@@ -46,8 +60,8 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Icon -->
-                        <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{DynamicResource HighlightAccentBrush}" VerticalAlignment="Center" Visibility="Collapsed" x:Name="FolderIcon"/>
-                        <fa:ImageAwesome Icon="FileOutline" Width="12" Foreground="{DynamicResource TextDimBrush}" VerticalAlignment="Center" x:Name="FileIcon"/>
+                        <fa:ImageAwesome Icon="Folder" Width="10" Foreground="{DynamicResource PrimaryAccentBrush}" VerticalAlignment="Center" Visibility="Collapsed" x:Name="FolderIcon"/>
+                        <fa:ImageAwesome Icon="FileOutline" Width="10" Foreground="{DynamicResource TextDimBrush}" VerticalAlignment="Center" x:Name="FileIcon"/>
 
                         <!-- Name -->
                         <TextBlock Grid.Column="1" Text="{Binding Name}" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" Margin="5,0" FontSize="12" TextTrimming="CharacterEllipsis"/>

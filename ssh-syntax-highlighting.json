@@ -1,0 +1,370 @@
+{
+  "name": "SSH Config Syntax Highlighting",
+  "description": "Complete syntax highlighting definition for SSH config files",
+  "fileTypes": [
+    "ssh_config",
+    "sshconfig",
+    "config"
+  ],
+  "scopeName": "source.ssh-config",
+  "palette": {
+    "keyword": "#C792EA",
+    "string": "#C3E88D",
+    "comment": "#546E7A",
+    "constant": "#F78C6C",
+    "support": "#82AAFF",
+    "variable": "#EEFFFF",
+    "operator": "#89DDFF",
+    "invalid": "#FF5370",
+    "entity": "#FFCB6B",
+    "storage": "#C792EA",
+    "numeric": "#F78C6C",
+    "boolean": "#FF5370",
+    "punctuation": "#89DDFF"
+  },
+  "tokens": [
+    {
+      "scope": "keyword.control.ssh-config",
+      "description": "SSH config keywords and directives",
+      "color": "keyword",
+      "examples": [
+        "Host",
+        "Match",
+        "Include"
+      ]
+    },
+    {
+      "scope": "keyword.other.directive.ssh-config",
+      "description": "SSH configuration options",
+      "color": "support",
+      "examples": [
+        "HostName",
+        "User",
+        "Port",
+        "IdentityFile",
+        "ProxyCommand",
+        "ForwardAgent",
+        "ServerAliveInterval",
+        "Compression",
+        "LocalForward",
+        "RemoteForward",
+        "DynamicForward",
+        "AddKeysToAgent",
+        "IdentitiesOnly",
+        "PreferredAuthentications",
+        "PubkeyAuthentication",
+        "PasswordAuthentication",
+        "ChallengeResponseAuthentication",
+        "GSSAPIAuthentication",
+        "KerberosAuthentication",
+        "StrictHostKeyChecking",
+        "UserKnownHostsFile",
+        "LogLevel",
+        "ConnectionAttempts",
+        "ConnectTimeout",
+        "TCPKeepAlive",
+        "ServerAliveCountMax",
+        "SendEnv",
+        "SetEnv",
+        "RequestTTY",
+        "VisualHostKey",
+        "HashKnownHosts",
+        "CheckHostIP",
+        "AddressFamily",
+        "BindAddress",
+        "CertificateFile",
+        "Ciphers",
+        "MACs",
+        "HostKeyAlgorithms",
+        "KexAlgorithms",
+        "RekeyLimit",
+        "ControlMaster",
+        "ControlPath",
+        "ControlPersist",
+        "EscapeChar",
+        "ExitOnForwardFailure",
+        "ForkAfterAuthentication",
+        "ForwardX11",
+        "ForwardX11Trusted",
+        "GatewayPorts",
+        "GlobalKnownHostsFile",
+        "HostbasedAuthentication",
+        "HostKeyAlias",
+        "IPQoS",
+        "KbdInteractiveAuthentication",
+        "LocalCommand",
+        "NoHostAuthenticationForLocalhost",
+        "NumberOfPasswordPrompts",
+        "PermitLocalCommand",
+        "PKCS11Provider",
+        "PreferredAuthentications",
+        "Protocol",
+        "ProxyJump",
+        "ProxyUseFdpass",
+        "RemoteCommand",
+        "RevokedHostKeys",
+        "SecurityKeyProvider",
+        "StreamLocalBindMask",
+        "StreamLocalBindUnlink",
+        "SyslogFacility",
+        "UpdateHostKeys",
+        "VerifyHostKeyDNS",
+        "XAuthLocation"
+      ]
+    },
+    {
+      "scope": "string.quoted.double.ssh-config",
+      "description": "Double-quoted strings",
+      "color": "string",
+      "pattern": "\"[^\"]*\""
+    },
+    {
+      "scope": "string.quoted.single.ssh-config",
+      "description": "Single-quoted strings",
+      "color": "string",
+      "pattern": "'[^']*'"
+    },
+    {
+      "scope": "string.unquoted.ssh-config",
+      "description": "Unquoted string values",
+      "color": "string"
+    },
+    {
+      "scope": "comment.line.number-sign.ssh-config",
+      "description": "Comments starting with #",
+      "color": "comment",
+      "pattern": "#.*$"
+    },
+    {
+      "scope": "constant.numeric.ssh-config",
+      "description": "Numeric values (ports, timeouts, etc.)",
+      "color": "numeric",
+      "pattern": "\\b[0-9]+\\b"
+    },
+    {
+      "scope": "constant.language.boolean.ssh-config",
+      "description": "Boolean values",
+      "color": "boolean",
+      "examples": [
+        "yes",
+        "no",
+        "true",
+        "false",
+        "ask",
+        "auto",
+        "autoask"
+      ]
+    },
+    {
+      "scope": "variable.other.wildcard.ssh-config",
+      "description": "Wildcard patterns in Host/Match",
+      "color": "variable",
+      "examples": [
+        "*",
+        "?",
+        "*.example.com",
+        "192.168.*.*"
+      ]
+    },
+    {
+      "scope": "entity.name.tag.host.ssh-config",
+      "description": "Host patterns and aliases",
+      "color": "entity"
+    },
+    {
+      "scope": "keyword.operator.logical.ssh-config",
+      "description": "Logical operators in Match",
+      "color": "operator",
+      "examples": [
+        "!",
+        "&&",
+        "||"
+      ]
+    },
+    {
+      "scope": "support.constant.loglevel.ssh-config",
+      "description": "LogLevel values",
+      "color": "constant",
+      "examples": [
+        "QUIET",
+        "FATAL",
+        "ERROR",
+        "INFO",
+        "VERBOSE",
+        "DEBUG",
+        "DEBUG1",
+        "DEBUG2",
+        "DEBUG3"
+      ]
+    },
+    {
+      "scope": "support.constant.addressfamily.ssh-config",
+      "description": "AddressFamily values",
+      "color": "constant",
+      "examples": [
+        "any",
+        "inet",
+        "inet6"
+      ]
+    },
+    {
+      "scope": "support.constant.authentication.ssh-config",
+      "description": "Authentication method values",
+      "color": "constant",
+      "examples": [
+        "publickey",
+        "password",
+        "keyboard-interactive",
+        "gssapi-with-mic",
+        "hostbased"
+      ]
+    },
+    {
+      "scope": "storage.type.path.ssh-config",
+      "description": "File paths and directories",
+      "color": "storage",
+      "pattern": "~?(/[^\\s]+)+"
+    },
+    {
+      "scope": "constant.character.escape.ssh-config",
+      "description": "Escape sequences and tokens",
+      "color": "operator",
+      "examples": [
+        "%h",
+        "%p",
+        "%r",
+        "%u",
+        "%l",
+        "%n",
+        "%d",
+        "%C",
+        "%%",
+        "%L",
+        "%i",
+        "%k"
+      ]
+    },
+    {
+      "scope": "invalid.illegal.ssh-config",
+      "description": "Invalid or deprecated options",
+      "color": "invalid"
+    },
+    {
+      "scope": "punctuation.definition.string.begin.ssh-config",
+      "description": "String delimiters",
+      "color": "punctuation"
+    },
+    {
+      "scope": "punctuation.separator.key-value.ssh-config",
+      "description": "Key-value separators (= or space)",
+      "color": "punctuation",
+      "pattern": "[=\\s]"
+    },
+    {
+      "scope": "meta.host-declaration.ssh-config",
+      "description": "Entire Host declaration block",
+      "color": "entity"
+    },
+    {
+      "scope": "meta.match-declaration.ssh-config",
+      "description": "Entire Match declaration block",
+      "color": "entity"
+    },
+    {
+      "scope": "variable.parameter.match.ssh-config",
+      "description": "Match criteria keywords",
+      "color": "support",
+      "examples": [
+        "canonical",
+        "exec",
+        "host",
+        "originalhost",
+        "user",
+        "localuser",
+        "all"
+      ]
+    },
+    {
+      "scope": "constant.other.cipher.ssh-config",
+      "description": "Cipher algorithm names",
+      "color": "constant",
+      "examples": [
+        "aes128-ctr",
+        "aes192-ctr",
+        "aes256-ctr",
+        "aes128-gcm@openssh.com",
+        "aes256-gcm@openssh.com",
+        "chacha20-poly1305@openssh.com"
+      ]
+    },
+    {
+      "scope": "constant.other.mac.ssh-config",
+      "description": "MAC algorithm names",
+      "color": "constant",
+      "examples": [
+        "hmac-sha2-256",
+        "hmac-sha2-512",
+        "hmac-sha2-256-etm@openssh.com",
+        "hmac-sha2-512-etm@openssh.com"
+      ]
+    },
+    {
+      "scope": "constant.other.kex.ssh-config",
+      "description": "Key exchange algorithm names",
+      "color": "constant",
+      "examples": [
+        "curve25519-sha256",
+        "curve25519-sha256@libssh.org",
+        "ecdh-sha2-nistp256",
+        "ecdh-sha2-nistp384",
+        "ecdh-sha2-nistp521",
+        "diffie-hellman-group-exchange-sha256"
+      ]
+    },
+    {
+      "scope": "constant.other.hostkey.ssh-config",
+      "description": "Host key algorithm names",
+      "color": "constant",
+      "examples": [
+        "ssh-ed25519",
+        "ssh-rsa",
+        "ecdsa-sha2-nistp256",
+        "ecdsa-sha2-nistp384",
+        "ecdsa-sha2-nistp521",
+        "ssh-ed25519-cert-v01@openssh.com"
+      ]
+    }
+  ],
+  "colorSchemes": {
+    "dark": {
+      "keyword": "#C792EA",
+      "string": "#C3E88D",
+      "comment": "#546E7A",
+      "constant": "#F78C6C",
+      "support": "#82AAFF",
+      "variable": "#EEFFFF",
+      "operator": "#89DDFF",
+      "invalid": "#FF5370",
+      "entity": "#FFCB6B",
+      "storage": "#C792EA",
+      "numeric": "#F78C6C",
+      "boolean": "#FF5370",
+      "punctuation": "#89DDFF"
+    },
+    "light": {
+      "keyword": "#7C4DFF",
+      "string": "#91B859",
+      "comment": "#90A4AE",
+      "constant": "#F76D47",
+      "support": "#6182B8",
+      "variable": "#39ADB5",
+      "operator": "#39ADB5",
+      "invalid": "#E53935",
+      "entity": "#F6A434",
+      "storage": "#7C4DFF",
+      "numeric": "#F76D47",
+      "boolean": "#E53935",
+      "punctuation": "#39ADB5"
+    }
+  }
+}

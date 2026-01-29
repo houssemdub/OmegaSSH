@@ -13,7 +13,6 @@ public partial class SettingsViewModel : ObservableObject
     private readonly ISettingsService _settingsService;
     private readonly IThemeService _themeService;
 
-    [ObservableProperty] private string _theme;
     [ObservableProperty] private bool _autoConnect;
     [ObservableProperty] private string _terminalFontFamily;
     [ObservableProperty] private double _terminalFontSize;
@@ -21,18 +20,12 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private int _keepAliveInterval;
     [ObservableProperty] private string _sessionLogPath;
 
-    public ObservableCollection<string> Themes { get; } = new() 
-    { 
-        "default", "dracula", "nord", "monokai", "cyberneon", "solarized", "retro" 
-    };
-
     public SettingsViewModel(ISettingsService settingsService, IThemeService themeService)
     {
         _settingsService = settingsService;
         _themeService = themeService;
 
         var s = _settingsService.Settings;
-        _theme = s.Theme;
         _autoConnect = s.AutoConnect;
         _terminalFontFamily = s.TerminalFontFamily;
         _terminalFontSize = s.TerminalFontSize;
@@ -45,7 +38,6 @@ public partial class SettingsViewModel : ObservableObject
     private async Task Save(Window window)
     {
         var s = _settingsService.Settings;
-        s.Theme = Theme;
         s.AutoConnect = AutoConnect;
         s.TerminalFontFamily = TerminalFontFamily;
         s.TerminalFontSize = TerminalFontSize;
@@ -54,7 +46,6 @@ public partial class SettingsViewModel : ObservableObject
         s.SessionLogPath = SessionLogPath;
 
         await _settingsService.SaveSettingsAsync();
-        _themeService.SetTheme(Theme);
         
         window.DialogResult = true;
         window.Close();

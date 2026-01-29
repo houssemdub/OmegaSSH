@@ -38,7 +38,7 @@
         </Border>
 
         <!-- FLOATING TOOLBAR -->
-        <Border Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="30,25" Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource MainCornerRadius}" Padding="8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Opacity="0.4">
+        <Border Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="30,25" Background="{DynamicResource SurfaceBrush}" CornerRadius="4" Padding="6" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Opacity="0.5">
             <Border.Style>
                 <Style TargetType="Border">
                     <Style.Triggers>
@@ -93,11 +93,8 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <Button Style="{StaticResource ModernButton}" Command="{Binding AddTunnelCommand}" Content="+ ADD TUNNEL" Margin="0,10,0,0" Height="30" FontSize="10"/>
+                            <Button Style="{StaticResource ModernButton}" Command="{Binding AddTunnelCommand}" Content="ADD NEW TUNNEL" Margin="0,10,0,0" FontSize="10"/>
                         </StackPanel>
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="15" Opacity="0.5" ShadowDepth="0"/>
-                        </Border.Effect>
                     </Border>
                 </Popup>
             </StackPanel>

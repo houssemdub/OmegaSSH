@@ -81,6 +81,7 @@ public partial class MainViewModel : ObservableObject
         _isSnippetsPanelVisible = _settingsService.Settings.IsSnippetsPanelVisible;
         _isStatusBarVisible = _settingsService.Settings.IsStatusBarVisible;
 
+        _themeService.ApplyDefaultTheme();
         LoadSessionsCommand.Execute(null);
     }
 
@@ -92,15 +93,6 @@ public partial class MainViewModel : ObservableObject
         var vm = new SettingsViewModel(settingsService, themeService);
         var win = new OmegaSSH.Views.SettingsWindow(vm) { Owner = System.Windows.Application.Current.MainWindow };
         win.ShowDialog();
-    }
-
-    [RelayCommand]
-    private async Task ChangeTheme(string themeName)
-    {
-        _themeService.SetTheme(themeName);
-        _settingsService.Settings.Theme = themeName;
-        await _settingsService.SaveSettingsAsync();
-        StatusText = $"Theme changed to {themeName}";
     }
 
     [RelayCommand]

@@ -29,7 +29,7 @@ public partial class SplashWindow : Window
 
             SetStatus("Applying visual theme...", 60);
             var themeService = App.Current.ServiceProvider.GetRequiredService<OmegaSSH.Services.IThemeService>();
-            themeService.SetTheme(settingsService.Settings.Theme);
+            themeService.ApplyDefaultTheme();
             await Task.Delay(300);
 
             SetStatus("Initializing UI Engine...", 80);

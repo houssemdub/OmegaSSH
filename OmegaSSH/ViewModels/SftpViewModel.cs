@@ -120,4 +120,61 @@ public partial class SftpViewModel : ObservableObject
             await RefreshAsync();
         }
     }
+
+    [RelayCommand]
+    public async Task DownloadAsync(SftpEntryModel? entry)
+    {
+        if (entry == null || entry.IsDirectory) return;
+
+        var sfd = new Microsoft.Win32.SaveFileDialog
+        {
+            FileName = entry.Name,
+            Title = "Download File"
+        };
+
+        if (sfd.ShowDialog() == true)
+        {
+            IsTransferring = true;
+            try
+            {
+                await _sshService.DownloadFileAsync(entry.FullPath, sfd.FileName);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Download failed: {ex.Message}");
+            }
+            finally
+            {
+                IsTransferring = false;
+            }
+        }
+    }
+
+    [RelayCommand]
+    public async Task DeleteAsync(SftpEntryModel? entry)
+    {
+        if (entry == null) return;
+        
+        if (System.Windows.MessageBox.Show($"Are you sure you want to delete {entry.Name}?", "Confirm Delete", 
+            System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning) == System.Windows.MessageBoxResult.Yes)
+        {
+            try
+            {
+                if (entry.IsDirectory) await _sshService.DeleteDirectoryAsync(entry.FullPath);
+                else await _sshService.DeleteFileAsync(entry.FullPath);
+                await RefreshAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Delete failed: {ex.Message}");
+            }
+        }
+    }
+
+    [RelayCommand]
+    public async Task RenameAsync(SftpEntryModel? entry)
+    {
+        // Simple rename logic would need a dialog, skip for now or use a prompt.
+        // For now, let's keep it simple.
+    }
 }

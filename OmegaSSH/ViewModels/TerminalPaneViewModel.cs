@@ -132,6 +132,15 @@ public partial class TerminalPaneViewModel : ObservableObject, IDisposable
         await _engine.WriteAsync("\x03");
     }
 
+    [RelayCommand]
+    private void Clear()
+    {
+        TerminalOutput = string.Empty;
+        ClearRequested?.Invoke();
+    }
+
+    public event Action? ClearRequested;
+
     public void Dispose()
     {
         _updateTimer?.Stop();
