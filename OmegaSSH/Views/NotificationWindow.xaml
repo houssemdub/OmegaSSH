@@ -5,7 +5,7 @@
         Title="OmegaSSH Notification" Height="200" Width="400"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterScreen">
-    <Border Background="{StaticResource BgBrush}" BorderBrush="{StaticResource PrimaryAccentBrush}" BorderThickness="2" CornerRadius="8">
+    <Border Background="{DynamicResource BgBrush}" BorderBrush="{DynamicResource PrimaryAccentBrush}" BorderThickness="2" CornerRadius="8">
         <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -14,11 +14,11 @@
             </Grid.RowDefinitions>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <fa:ImageAwesome x:Name="IconImage" Icon="InfoCircle" Width="20" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,10,0"/>
-                <TextBlock x:Name="TitleLabel" Text="NOTIFICATION" Foreground="{StaticResource PrimaryAccentBrush}" FontWeight="Bold" FontSize="14"/>
+                <fa:ImageAwesome x:Name="IconImage" Icon="InfoCircle" Width="20" Foreground="{DynamicResource PrimaryAccentBrush}" Margin="0,0,10,0"/>
+                <TextBlock x:Name="TitleLabel" Text="NOTIFICATION" Foreground="{DynamicResource PrimaryAccentBrush}" FontWeight="Bold" FontSize="14"/>
             </StackPanel>
 
-            <TextBlock Grid.Row="1" x:Name="MessageLabel" Text="Message goes here..." Foreground="{StaticResource TextBrush}" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="12"/>
+            <TextBlock Grid.Row="1" x:Name="MessageLabel" Text="Message goes here..." Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="12"/>
 
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Style="{StaticResource ModernButton}" Content="DISMISS" Click="Dismiss_Click" Padding="20,5" FontSize="11"/>

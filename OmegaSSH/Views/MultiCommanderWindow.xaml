@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         Title="Multi-Commander Orchestrator" Height="600" Width="900"
-        Background="{StaticResource BgBrush}"
-        Foreground="{StaticResource TextBrush}"
+        Background="{DynamicResource BgBrush}"
+        Foreground="{DynamicResource TextBrush}"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None" AllowsTransparency="True">
     
-    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
@@ -18,13 +18,13 @@
             </Grid.RowDefinitions>
 
             <!-- Title Bar -->
-            <Grid Grid.Row="0" Background="{StaticResource SidebarBrush}">
+            <Grid Grid.Row="0" Background="{DynamicResource SidebarBrush}">
                 <TextBlock Text="MULTI-COMMANDER ORCHESTRATOR" VerticalAlignment="Center" Margin="15,0" FontWeight="Bold" FontSize="12"/>
                 <Button Style="{StaticResource IconButton}" Content="" FontFamily="Segoe MDL2 Assets" HorizontalAlignment="Right" Click="Close_Click"/>
             </Grid>
 
             <!-- Command Input -->
-            <Border Grid.Row="1" Background="{StaticResource SidebarBrush}" Padding="20" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1">
+            <Border Grid.Row="1" Background="{DynamicResource SidebarBrush}" Padding="20" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -44,17 +44,17 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Session Selection -->
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+                <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="SELECT TARGETS" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextDimBrush}" Margin="15,10"/>
+                        <TextBlock Text="SELECT TARGETS" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextDimBrush}" Margin="15,10"/>
                         <ListBox Grid.Row="1" ItemsSource="{Binding Sessions}" Background="Transparent" BorderThickness="0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Session.Name}" Foreground="{StaticResource TextBrush}" Margin="5"/>
+                                    <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Session.Name}" Foreground="{DynamicResource TextBrush}" Margin="5"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
@@ -67,15 +67,15 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="EXECUTION LOG" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextDimBrush}" Margin="15,10"/>
+                    <TextBlock Text="EXECUTION LOG" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextDimBrush}" Margin="15,10"/>
                     <ScrollViewer Grid.Row="1">
                         <ItemsControl ItemsSource="{Binding Results}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="{StaticResource SidebarBrush}" Margin="10,5" Padding="10" CornerRadius="4" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                    <Border Background="{DynamicResource SidebarBrush}" Margin="10,5" Padding="10" CornerRadius="4" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
                                         <StackPanel>
                                             <Grid>
-                                                <TextBlock Text="{Binding Session.Name}" FontWeight="Bold" Foreground="{StaticResource PrimaryAccentBrush}"/>
+                                                <TextBlock Text="{Binding Session.Name}" FontWeight="Bold" Foreground="{DynamicResource PrimaryAccentBrush}"/>
                                                 <fa:ImageAwesome Icon="Check" Width="12" Foreground="#00FF00" HorizontalAlignment="Right" Visibility="{Binding Success, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                                 <fa:ImageAwesome Icon="Warning" Width="12" Foreground="#FF0000" HorizontalAlignment="Right" Visibility="{Binding Success, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
                                             </Grid>
@@ -91,10 +91,10 @@
             </Grid>
 
             <!-- Status Footer -->
-            <Border Grid.Row="3" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+            <Border Grid.Row="3" Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0">
                 <Grid Margin="15,0">
-                    <ProgressBar Value="{Binding Progress}" Height="4" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0" Foreground="{StaticResource HighlightAccentBrush}"/>
-                    <TextBlock Text="Ready" VerticalAlignment="Center" FontSize="10" Foreground="{StaticResource TextDimBrush}"/>
+                    <ProgressBar Value="{Binding Progress}" Height="4" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource HighlightAccentBrush}"/>
+                    <TextBlock Text="Ready" VerticalAlignment="Center" FontSize="10" Foreground="{DynamicResource TextDimBrush}"/>
                 </Grid>
             </Border>
         </Grid>

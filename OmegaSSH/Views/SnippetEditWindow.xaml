@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="Snippet Editor" Height="400" Width="450"
         WindowStartupLocation="CenterOwner"
-        Background="{StaticResource BgBrush}"
-        Foreground="{StaticResource TextBrush}"
+        Background="{DynamicResource BgBrush}"
+        Foreground="{DynamicResource TextBrush}"
         WindowStyle="None"
         AllowsTransparency="True"
         x:Name="ThisWindow">
@@ -17,7 +17,7 @@
         <WindowChrome CaptionHeight="40" GlassFrameThickness="0" CornerRadius="0" ResizeBorderThickness="8"/>
     </WindowChrome.WindowChrome>
 
-    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="10">
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10">
         <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -27,7 +27,7 @@
 
             <!-- Header -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <fa:ImageAwesome Icon="Code" Width="20" Foreground="{StaticResource SecondaryAccentBrush}" Margin="0,0,12,0"/>
+                <fa:ImageAwesome Icon="Code" Width="20" Foreground="{DynamicResource SecondaryAccentBrush}" Margin="0,0,12,0"/>
                 <TextBlock Text="SNIPPET EDITOR" FontSize="18" FontWeight="Bold"/>
             </StackPanel>
 
@@ -48,7 +48,7 @@
             <!-- Actions -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                 <Button Content="CANCEL" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=ThisWindow}" 
-                        Background="Transparent" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="15,8" Margin="0,0,10,0"/>
+                        Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="15,8" Margin="0,0,10,0"/>
                 <Button Content="SAVE SNIPPET" Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=ThisWindow}" 
                         Style="{StaticResource ModernButton}"/>
             </StackPanel>

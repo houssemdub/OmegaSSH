@@ -58,8 +58,10 @@ public partial class TerminalView : UserControl
     {
         if (e.Key == Key.Enter)
         {
-            // Search functionality would need to work across panes
-            MessageBox.Show("Search across panes not yet implemented", "Info");
+            if (DataContext is TerminalViewModel vm)
+            {
+                vm.SearchCommand.Execute(SearchBox.Text);
+            }
         }
     }
 

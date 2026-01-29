@@ -19,4 +19,8 @@ public class AppSettingsModel
     
     public double WindowWidth { get; set; } = 1100;
     public double WindowHeight { get; set; } = 700;
+
+    public bool IsSidebarVisible { get; set; } = true;
+    public bool IsSnippetsPanelVisible { get; set; } = true;
+    public bool IsStatusBarVisible { get; set; } = true;
 }

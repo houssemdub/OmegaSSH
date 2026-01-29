@@ -61,39 +61,64 @@ public class ThemeService : IThemeService
         var highlightColor = (Color)ColorConverter.ConvertFromString(highlight);
         var dtColor = (Color)ColorConverter.ConvertFromString(dimText ?? border);
 
-        resources["BgBrush"] = new SolidColorBrush(bgColor);
-        resources["SidebarBrush"] = new SolidColorBrush(sidebarColor);
-        resources["PrimaryAccentBrush"] = new SolidColorBrush(primaryColor);
-        resources["AccentBrush"] = new SolidColorBrush(primaryColor);
-        resources["TextBrush"] = new SolidColorBrush(textColor);
-        resources["BorderBrush"] = new SolidColorBrush(borderColor);
-        resources["SecondaryAccentBrush"] = new SolidColorBrush(secondaryColor);
-        resources["HighlightAccentBrush"] = new SolidColorBrush(highlightColor);
-        resources["TextDimBrush"] = new SolidColorBrush(dtColor);
+        resources["BgBrush"] = CreateFrozenBrush(bgColor);
+        resources["SidebarBrush"] = CreateFrozenBrush(sidebarColor);
+        resources["PrimaryAccentBrush"] = CreateFrozenBrush(primaryColor);
+        resources["AccentBrush"] = CreateFrozenBrush(primaryColor);
+        resources["TextBrush"] = CreateFrozenBrush(textColor);
+        resources["BorderBrush"] = CreateFrozenBrush(borderColor);
+        resources["SecondaryAccentBrush"] = CreateFrozenBrush(secondaryColor);
+        resources["HighlightAccentBrush"] = CreateFrozenBrush(highlightColor);
+        resources["TextDimBrush"] = CreateFrozenBrush(dtColor);
 
         // Surface is usually a mix of BG and Sidebar or slightly lighter Sidebar
         var surfaceColor = Color.FromArgb(255, 
             (byte)Math.Min(255, sidebarColor.R + 10), 
             (byte)Math.Min(255, sidebarColor.G + 10), 
             (byte)Math.Min(255, sidebarColor.B + 10));
-        resources["SurfaceBrush"] = new SolidColorBrush(surfaceColor);
+            
+        resources["SurfaceBrush"] = CreateFrozenBrush(surfaceColor);
         resources["SurfaceColor"] = surfaceColor;
 
-        // Gradients
-        resources["PrimaryGradient"] = new LinearGradientBrush(primaryColor, Color.FromArgb(255, (byte)(primaryColor.R*0.8), (byte)(primaryColor.G*0.8), (byte)(primaryColor.B*0.8)), 45);
-        resources["SecondaryGradient"] = new LinearGradientBrush(secondaryColor, Color.FromArgb(255, (byte)(secondaryColor.R*0.8), (byte)(secondaryColor.G*0.8), (byte)(secondaryColor.B*0.8)), 45);
+        // Gradients - Using standard WPF constructor (Color, Color, startPoint, endPoint)
+        var primaryGrad = new LinearGradientBrush(primaryColor, Color.FromArgb(255, (byte)(primaryColor.R*0.8), (byte)(primaryColor.G*0.8), (byte)(primaryColor.B*0.8)), new Point(0,0), new Point(1,1));
+        primaryGrad.Freeze();
+        resources["PrimaryGradient"] = primaryGrad;
+
+        var secondaryGrad = new LinearGradientBrush(secondaryColor, Color.FromArgb(255, (byte)(secondaryColor.R*0.8), (byte)(secondaryColor.G*0.8), (byte)(secondaryColor.B*0.8)), new Point(0,0), new Point(1,1));
+        secondaryGrad.Freeze();
+        resources["SecondaryGradient"] = secondaryGrad;
         
         var sidebarGrad = new LinearGradientBrush();
         sidebarGrad.StartPoint = new Point(0, 0);
         sidebarGrad.EndPoint = new Point(0, 1);
         sidebarGrad.GradientStops.Add(new GradientStop(bgColor, 0));
         sidebarGrad.GradientStops.Add(new GradientStop(sidebarColor, 1));
+        sidebarGrad.Freeze();
         resources["SidebarGradient"] = sidebarGrad;
 
         var glow = new RadialGradientBrush();
         glow.GradientStops.Add(new GradientStop(Color.FromArgb(68, primaryColor.R, primaryColor.G, primaryColor.B), 0));
         glow.GradientStops.Add(new GradientStop(Color.FromArgb(0, primaryColor.R, primaryColor.G, primaryColor.B), 1));
+        glow.Freeze();
         resources["AccentGlowBrush"] = glow;
+
+        // Glass Brushes
+        var glass = new LinearGradientBrush();
+        glass.StartPoint = new Point(0, 0);
+        glass.EndPoint = new Point(1, 1);
+        glass.GradientStops.Add(new GradientStop(Color.FromArgb(26, 255, 255, 255), 0));
+        glass.GradientStops.Add(new GradientStop(Color.FromArgb(8, 255, 255, 255), 1));
+        glass.Freeze();
+        resources["GlassBrush"] = glass;
+
+        var glassBorder = new LinearGradientBrush();
+        glassBorder.StartPoint = new Point(0, 0);
+        glassBorder.EndPoint = new Point(1, 1);
+        glassBorder.GradientStops.Add(new GradientStop(Color.FromArgb(51, 255, 255, 255), 0));
+        glassBorder.GradientStops.Add(new GradientStop(Color.FromArgb(17, 255, 255, 255), 1));
+        glassBorder.Freeze();
+        resources["GlassBorderBrush"] = glassBorder;
 
         // Colors for triggers
         resources["BgColor"] = bgColor;
@@ -101,5 +126,13 @@ public class ThemeService : IThemeService
         resources["AccentColor"] = primaryColor;
         resources["TextColor"] = textColor;
         resources["BorderColor"] = borderColor;
+        resources["HighlightColor"] = highlightColor;
+    }
+
+    private SolidColorBrush CreateFrozenBrush(Color color)
+    {
+        var brush = new SolidColorBrush(color);
+        brush.Freeze();
+        return brush;
     }
 }

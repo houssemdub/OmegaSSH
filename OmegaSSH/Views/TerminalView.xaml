@@ -38,7 +38,7 @@
         </Border>
 
         <!-- FLOATING TOOLBAR -->
-        <Border Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="30,25" Background="{StaticResource SurfaceBrush}" CornerRadius="12" Padding="8" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Opacity="0.4">
+        <Border Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="30,25" Background="{DynamicResource SurfaceBrush}" CornerRadius="12" Padding="8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Opacity="0.4">
             <Border.Style>
                 <Style TargetType="Border">
                     <Style.Triggers>
@@ -55,23 +55,65 @@
                 <Button Style="{StaticResource IconButton}" Command="{Binding SplitHorizontalCommand}" ToolTip="Split Horizontal" Margin="5,0">
                     <fa:ImageAwesome Icon="ThLarge" Width="12"/>
                 </Button>
-                <Border Width="1" Background="{StaticResource BorderBrush}" Margin="5,0"/>
-                <Button Style="{StaticResource IconButton}" Click="ToggleSftp_Click" Margin="5,0,0,0">
+                <Border Width="1" Background="{DynamicResource BorderBrush}" Margin="5,0"/>
+                <Button Style="{StaticResource IconButton}" Click="ToggleSftp_Click" Margin="5,0">
                     <fa:ImageAwesome Icon="FolderOpen" Width="12"/>
                 </Button>
+                <Border Width="1" Background="{DynamicResource BorderBrush}" Margin="5,0"/>
+                <Button Style="{StaticResource IconButton}" Command="{Binding ActivePane.InterruptCommand}" ToolTip="Interrupt Active Command (Ctrl+C)" Margin="5,0">
+                    <fa:ImageAwesome Icon="StopCircle" Width="12" Foreground="#FF5555"/>
+                </Button>
+                <Border Width="1" Background="{DynamicResource BorderBrush}" Margin="5,0"/>
+                <ToggleButton x:Name="TunnelButton" Style="{StaticResource IconButton}" ToolTip="Active Tunnels">
+                    <fa:ImageAwesome Icon="Link" Width="12"/>
+                </ToggleButton>
+
+                <Popup IsOpen="{Binding IsChecked, ElementName=TunnelButton}" PlacementTarget="{Binding ElementName=TunnelButton}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                    <Border Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="15" Width="300">
+                        <StackPanel>
+                            <TextBlock Text="PORT FORWARDING" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource PrimaryAccentBrush}" Margin="0,0,0,15"/>
+                            <ItemsControl ItemsSource="{Binding Tunnels}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{DynamicResource BgBrush}" Margin="0,0,0,5" Padding="10" CornerRadius="4">
+                                            <Grid>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding LocalPort}" FontWeight="Bold"/>
+                                                    <fa:ImageAwesome Icon="ArrowRight" Width="8" Margin="10,0" Opacity="0.5"/>
+                                                    <TextBlock Text="{Binding RemoteHost}" Opacity="0.7"/>
+                                                    <TextBlock Text=":" Opacity="0.7"/>
+                                                    <TextBlock Text="{Binding RemotePort}" Opacity="0.7"/>
+                                                </StackPanel>
+                                                <Button Style="{StaticResource IconButton}" HorizontalAlignment="Right" Command="{Binding DataContext.StartTunnelCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Visibility="{Binding IsEnabled, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                                    <fa:ImageAwesome Icon="Play" Width="8" Foreground="#00FF00"/>
+                                                </Button>
+                                                <fa:ImageAwesome Icon="Check" Width="10" Foreground="#00FF00" HorizontalAlignment="Right" Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Style="{StaticResource ModernButton}" Command="{Binding AddTunnelCommand}" Content="+ ADD TUNNEL" Margin="0,10,0,0" Height="30" FontSize="10"/>
+                        </StackPanel>
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="15" Opacity="0.5" ShadowDepth="0"/>
+                        </Border.Effect>
+                    </Border>
+                </Popup>
             </StackPanel>
         </Border>
 
         <!-- SEARCH OVERLAY -->
         <Border Grid.Column="0" x:Name="SearchOverlay" VerticalAlignment="Top" HorizontalAlignment="Right" 
-                Background="{StaticResource SurfaceBrush}" CornerRadius="12" 
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                Background="{DynamicResource SurfaceBrush}" CornerRadius="12" 
+                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
                 Visibility="Collapsed" Padding="15,10" Panel.ZIndex="100" Margin="0,80,30,0">
             <StackPanel Orientation="Horizontal">
-                <fa:ImageAwesome Icon="Search" Width="12" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,15,0"/>
+                <fa:ImageAwesome Icon="Search" Width="12" Foreground="{DynamicResource PrimaryAccentBrush}" Margin="0,0,15,0"/>
                 <TextBox x:Name="SearchBox" Width="200" Background="Transparent" BorderThickness="0" 
                          Foreground="White" VerticalAlignment="Center"
-                         KeyDown="SearchBox_KeyDown" Tag="Find in scrollback..." Style="{StaticResource ModernTextBox}"/>
+                         KeyDown="SearchBox_KeyDown" Tag="Find in scrollback..." Style="{StaticResource ModernTextBox}"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Style="{StaticResource IconButton}" Click="CloseSearch_Click" Margin="10,0,0,0">
                     <fa:ImageAwesome Icon="Close" Width="10"/>
                 </Button>
@@ -79,7 +121,7 @@
         </Border>
 
         <!-- SFTP INTEGRATION -->
-        <Border Grid.Column="1" Width="350" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,0,0" x:Name="SftpPane" Visibility="Collapsed" Background="{StaticResource SidebarGradient}">
+        <Border Grid.Column="1" Width="350" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,0,0,0" x:Name="SftpPane" Visibility="Collapsed" Background="{DynamicResource SidebarGradient}">
             <local:SftpView DataContext="{Binding Sftp}"/>
         </Border>
     </Grid>

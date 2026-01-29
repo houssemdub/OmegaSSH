@@ -75,6 +75,12 @@ public partial class MainViewModel : ObservableObject
         _serviceProvider = serviceProvider;
         _themeService = themeService;
         _keyManager = new KeyManagerViewModel(keyService, vaultService, keyStorageService);
+
+        // Load UI state from settings
+        _isSidebarVisible = _settingsService.Settings.IsSidebarVisible;
+        _isSnippetsPanelVisible = _settingsService.Settings.IsSnippetsPanelVisible;
+        _isStatusBarVisible = _settingsService.Settings.IsStatusBarVisible;
+
         LoadSessionsCommand.Execute(null);
     }
 
@@ -452,21 +458,30 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void ToggleSidebar()
+    private async Task ToggleSidebar()
     {
         IsSidebarVisible = !IsSidebarVisible;
+        StatusText = IsSidebarVisible ? "Sidebar revealed" : "Sidebar hidden";
+        _settingsService.Settings.IsSidebarVisible = IsSidebarVisible;
+        await _settingsService.SaveSettingsAsync();
     }
 
     [RelayCommand]
-    private void ToggleSnippetsPanel()
+    private async Task ToggleSnippetsPanel()
     {
         IsSnippetsPanelVisible = !IsSnippetsPanelVisible;
+        StatusText = IsSnippetsPanelVisible ? "Snippets library visible" : "Snippets library minimized";
+        _settingsService.Settings.IsSnippetsPanelVisible = IsSnippetsPanelVisible;
+        await _settingsService.SaveSettingsAsync();
     }
 
     [RelayCommand]
-    private void ToggleStatusBar()
+    private async Task ToggleStatusBar()
     {
         IsStatusBarVisible = !IsStatusBarVisible;
+        StatusText = IsStatusBarVisible ? "Status bar enabled" : "Status bar hidden";
+        _settingsService.Settings.IsStatusBarVisible = IsStatusBarVisible;
+        await _settingsService.SaveSettingsAsync();
     }
 
     [RelayCommand]
@@ -478,12 +493,15 @@ public partial class MainViewModel : ObservableObject
             IsSidebarVisible = false;
             IsSnippetsPanelVisible = false;
             IsStatusBarVisible = false;
+            StatusText = "ZEN MODE ACTIVE - DISTRACTION REMOVED";
         }
         else
         {
-            IsSidebarVisible = true;
-            IsSnippetsPanelVisible = true;
-            IsStatusBarVisible = true;
+            // Restore from settings
+            IsSidebarVisible = _settingsService.Settings.IsSidebarVisible;
+            IsSnippetsPanelVisible = _settingsService.Settings.IsSnippetsPanelVisible;
+            IsStatusBarVisible = _settingsService.Settings.IsStatusBarVisible;
+            StatusText = "ZEN MODE DEACTIVATED";
         }
     }
 
@@ -491,5 +509,32 @@ public partial class MainViewModel : ObservableObject
     private void ToggleBroadcastMode()
     {
         IsBroadcastMode = !IsBroadcastMode;
+    }
+
+    [RelayCommand]
+    private void CloseAllTabs()
+    {
+        var tabs = TerminalTabs.ToList();
+        foreach (var tab in tabs)
+        {
+            TerminalTabs.Remove(tab);
+            tab.Dispose();
+        }
+        SelectedTab = null;
+    }
+
+    [RelayCommand]
+    private void CloseOthers(TerminalViewModel? current)
+    {
+        if (current == null) current = SelectedTab;
+        if (current == null) return;
+
+        var others = TerminalTabs.Where(t => t != current).ToList();
+        foreach (var tab in others)
+        {
+            TerminalTabs.Remove(tab);
+            tab.Dispose();
+        }
+        SelectedTab = current;
     }
 }

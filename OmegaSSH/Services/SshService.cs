@@ -13,6 +13,7 @@ public class SshService : ISshService, IDisposable
     private SshClient? _client;
     private SftpClient? _sftpClient;
     private ShellStream? _shellStream;
+    private bool _isDisposed;
     public event Action<string>? DataReceived;
     public event Action? Disconnected;
 
@@ -46,7 +47,7 @@ public class SshService : ISshService, IDisposable
 
     public async Task<List<SftpEntryModel>> ListDirectoryAsync(string path)
     {
-        if (_sftpClient == null || !_sftpClient.IsConnected) return new List<SftpEntryModel>();
+        if (_isDisposed || _sftpClient == null || !_sftpClient.IsConnected) return new List<SftpEntryModel>();
 
         return await Task.Run(() =>
         {
@@ -65,7 +66,7 @@ public class SshService : ISshService, IDisposable
 
     public async Task DownloadFileAsync(string remotePath, string localPath)
     {
-        if (_sftpClient == null || !_sftpClient.IsConnected) return;
+        if (_isDisposed || _sftpClient == null || !_sftpClient.IsConnected) return;
 
         await Task.Run(() =>
         {
@@ -76,7 +77,7 @@ public class SshService : ISshService, IDisposable
 
     public async Task UploadFileAsync(string localPath, string remotePath)
     {
-        if (_sftpClient == null || !_sftpClient.IsConnected) return;
+        if (_isDisposed || _sftpClient == null || !_sftpClient.IsConnected) return;
 
         await Task.Run(() =>
         {
@@ -96,7 +97,7 @@ public class SshService : ISshService, IDisposable
 
     public async Task SendCommandAsync(string command)
     {
-        if (_shellStream != null && _shellStream.CanWrite)
+        if (!_isDisposed && _shellStream != null && _shellStream.CanWrite)
         {
             await Task.Run(() =>
             {
@@ -108,18 +109,24 @@ public class SshService : ISshService, IDisposable
 
     public async Task DisconnectAsync()
     {
+        if (_isDisposed) return;
+        _isDisposed = true;
+
         await Task.Run(() =>
         {
             _shellStream?.Dispose();
-            _sftpClient?.Disconnect();
+            if (_sftpClient?.IsConnected == true) _sftpClient.Disconnect();
             _sftpClient?.Dispose();
-            _client?.Disconnect();
+            if (_client?.IsConnected == true) _client.Disconnect();
             _client?.Dispose();
         });
     }
 
     public void Dispose()
     {
+        if (_isDisposed) return;
+        _isDisposed = true;
+
         _shellStream?.Dispose();
         _sftpClient?.Dispose();
         _client?.Dispose();

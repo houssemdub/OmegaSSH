@@ -29,6 +29,12 @@ public partial class TerminalViewModel : ObservableObject, IDisposable
     private ObservableCollection<TerminalPaneViewModel> _panes = new();
 
     [ObservableProperty]
+    private ObservableCollection<TunnelModel> _tunnels = new();
+
+    [ObservableProperty]
+    private string _searchText = string.Empty;
+
+    [ObservableProperty]
     private TerminalPaneViewModel? _activePane;
 
     [ObservableProperty]
@@ -61,6 +67,15 @@ public partial class TerminalViewModel : ObservableObject, IDisposable
 
         _terminalFontFamily = settingsService.Settings.TerminalFontFamily;
         _terminalFontSize = settingsService.Settings.TerminalFontSize;
+
+        if (session.Tunnels != null)
+        {
+            foreach (var tunnel in session.Tunnels)
+            {
+                Tunnels.Add(tunnel);
+                // Optionally auto-start tunnels here if they were enabled
+            }
+        }
     }
 
     [RelayCommand]
@@ -121,12 +136,45 @@ public partial class TerminalViewModel : ObservableObject, IDisposable
         }
     }
 
+    [RelayCommand]
+    private void Search(string text)
+    {
+        SearchText = text;
+        if (string.IsNullOrEmpty(text)) return;
+
+        foreach (var pane in Panes)
+        {
+            pane.Search(text);
+        }
+    }
+
+    [RelayCommand]
+    private void AddTunnel()
+    {
+        var tunnel = new TunnelModel();
+        Tunnels.Add(tunnel);
+        
+        if (_session != null && _session.Tunnels == null)
+            _session.Tunnels = new List<TunnelModel>();
+            
+        _session.Tunnels?.Add(tunnel);
+    }
+
+    [RelayCommand]
+    private void StartTunnel(TunnelModel tunnel)
+    {
+        if (ActivePane?.Engine is ISshService ssh)
+        {
+            ssh.CreateTunnel(tunnel);
+            tunnel.IsEnabled = true;
+        }
+    }
+
     public void Dispose()
     {
         foreach (var pane in Panes)
         {
             pane.Dispose();
         }
-        Sftp?.RefreshAsync().Wait(); // Just placeholder
     }
 }

@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="Settings" Height="500" Width="450"
         WindowStartupLocation="CenterOwner"
-        Background="{StaticResource BgBrush}"
-        Foreground="{StaticResource TextBrush}"
+        Background="{DynamicResource BgBrush}"
+        Foreground="{DynamicResource TextBrush}"
         WindowStyle="None"
         AllowsTransparency="True"
         x:Name="ThisWindow">
@@ -17,7 +17,7 @@
         <WindowChrome CaptionHeight="40" GlassFrameThickness="0" CornerRadius="0" ResizeBorderThickness="8"/>
     </WindowChrome.WindowChrome>
 
-    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="10">
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10">
         <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -27,7 +27,7 @@
 
             <!-- Header -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <fa:ImageAwesome Icon="Gear" Width="20" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,12,0"/>
+                <fa:ImageAwesome Icon="Gear" Width="20" Foreground="{DynamicResource PrimaryAccentBrush}" Margin="0,0,12,0"/>
                 <TextBlock Text="APPLICATION SETTINGS" FontSize="18" FontWeight="Bold"/>
             </StackPanel>
 
@@ -44,7 +44,7 @@
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter TargetName="Border" Property="Background" Value="#1AFFFFFF"/>
-                                            <Setter Property="Foreground" Value="{StaticResource PrimaryAccentBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryAccentBrush}"/>
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="Border" Property="Background" Value="#0DFFFFFF"/>
@@ -68,7 +68,7 @@
                             <TextBlock Text="Font Size" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
                             <TextBox Text="{Binding TerminalFontSize}" Style="{StaticResource ModernTextBox}"/>
                             
-                            <CheckBox IsChecked="{Binding EnableAnsiColors}" Content="Enable ANSI Colors" Margin="0,15,0,0" Foreground="{StaticResource TextBrush}"/>
+                            <CheckBox IsChecked="{Binding EnableAnsiColors}" Content="Enable ANSI Colors" Margin="0,15,0,0" Foreground="{DynamicResource TextBrush}"/>
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
@@ -76,7 +76,7 @@
                 <TabItem Header="General">
                     <ScrollViewer Margin="0,20,0,0">
                         <StackPanel>
-                            <CheckBox IsChecked="{Binding AutoConnect}" Content="Auto-connect to last session on startup" Foreground="{StaticResource TextBrush}"/>
+                            <CheckBox IsChecked="{Binding AutoConnect}" Content="Auto-connect to last session on startup" Foreground="{DynamicResource TextBrush}"/>
 
                             <TextBlock Text="SSH Keep Alive (seconds)" Style="{StaticResource ModernLabel}" Margin="0,15,0,0"/>
                             <TextBox Text="{Binding KeepAliveInterval}" Style="{StaticResource ModernTextBox}"/>
@@ -89,7 +89,7 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBox Text="{Binding SessionLogPath}" Style="{StaticResource ModernTextBox}" IsReadOnly="True" Opacity="0.7"/>
                                 <Button Grid.Column="1" Style="{StaticResource IconButton}" Command="{Binding BrowseLogPathCommand}" Margin="5,0,0,0">
-                                    <fa:ImageAwesome Icon="FolderOpen" Width="14" Foreground="{StaticResource TextDimBrush}"/>
+                                    <fa:ImageAwesome Icon="FolderOpen" Width="14" Foreground="{DynamicResource TextDimBrush}"/>
                                 </Button>
                             </Grid>
                         </StackPanel>
@@ -100,7 +100,7 @@
             <!-- Actions -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                 <Button Content="CANCEL" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=ThisWindow}" 
-                        Background="Transparent" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="15,8" Margin="0,0,10,0"/>
+                        Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="15,8" Margin="0,0,10,0"/>
                 <Button Content="APPLY CHANGES" Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=ThisWindow}" 
                         Style="{StaticResource ModernButton}"/>
             </StackPanel>

@@ -98,7 +98,10 @@ public class SyntaxHighlighter
             {
                 try
                 {
-                    run.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(rule.Foreground));
+                    var color = (Color)ColorConverter.ConvertFromString(rule.Foreground);
+                    var brush = new SolidColorBrush(color);
+                    brush.Freeze();
+                    run.Foreground = brush;
                 }
                 catch { }
             }

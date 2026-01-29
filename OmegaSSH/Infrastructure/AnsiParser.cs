@@ -11,7 +11,7 @@ namespace OmegaSSH.Infrastructure;
 
 public class AnsiParser
 {
-    private static readonly Regex AnsiRegex = new Regex(@"(\x1B\[[0-9;]*[mK])", RegexOptions.Compiled);
+    private static readonly Regex AnsiRegex = new Regex(@"(\x1B\[[0-9;?]*[a-zA-Z])", RegexOptions.Compiled);
     private Brush _currentForeground = Brushes.LightGray;
     private readonly SyntaxHighlighter? _highlighter;
 
@@ -34,20 +34,29 @@ public class AnsiParser
                 var document = richTextBox.Document;
                 Paragraph? paragraph = document.Blocks.LastBlock as Paragraph;
                 
-                if (paragraph == null)
-                {
-                    paragraph = new Paragraph { Margin = new Thickness(0) };
-                    document.Blocks.Add(paragraph);
-                }
-
                 var parts = AnsiRegex.Split(text);
                 foreach (var part in parts)
                 {
                     if (string.IsNullOrEmpty(part)) continue;
 
+                    if (paragraph == null)
+                    {
+                        paragraph = new Paragraph { Margin = new Thickness(0) };
+                        document.Blocks.Add(paragraph);
+                    }
+
                     if (part.StartsWith("\x1B["))
                     {
-                        _currentForeground = GetColorFromAnsi(part, _currentForeground);
+                        if (part.EndsWith("m"))
+                        {
+                            _currentForeground = GetColorFromAnsi(part, _currentForeground);
+                        }
+                        else if (part.EndsWith("J") || (part.EndsWith("H") && part.Length < 5)) // ESC[2J or ESC[H
+                        {
+                            document.Blocks.Clear();
+                            paragraph = null;
+                        }
+                        // Ignore other sequences like [6n (status) or [?25h (cursor)
                     }
                         else
                         {
@@ -116,5 +125,12 @@ public class AnsiParser
         if (ansiCode.Contains("0")) return Brushes.LightGray; // Reset (actually default terminal color)
         
         return current;
+    }
+
+    private SolidColorBrush CreateFrozenBrush(Color color)
+    {
+        var brush = new SolidColorBrush(color);
+        brush.Freeze();
+        return brush;
     }
 }

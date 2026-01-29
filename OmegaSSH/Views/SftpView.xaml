@@ -7,23 +7,26 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="300">
-    <Grid Background="{StaticResource SidebarBrush}">
+    <Grid Background="{DynamicResource SidebarBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- SFTP Header / Toolbar -->
-        <Border Padding="10" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+        <Border Padding="10" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding CurrentPath}" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextDimBrush}" TextTrimming="CharacterEllipsis" ToolTip="{Binding CurrentPath}"/>
+                <TextBlock Text="{Binding CurrentPath}" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource TextDimBrush}" TextTrimming="CharacterEllipsis" ToolTip="{Binding CurrentPath}"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
+                    <Button Style="{StaticResource IconButton}" Command="{Binding NavigateUpCommand}" ToolTip="Up One Level" Margin="0,0,5,0">
+                        <fa:ImageAwesome Icon="LevelUp" Width="10" Foreground="{DynamicResource TextDimBrush}"/>
+                    </Button>
                     <Button Style="{StaticResource IconButton}" Command="{Binding RefreshCommand}" ToolTip="Refresh">
-                        <fa:ImageAwesome Icon="Refresh" Width="10" Foreground="{StaticResource TextDimBrush}"/>
+                        <fa:ImageAwesome Icon="Refresh" Width="10" Foreground="{DynamicResource TextDimBrush}"/>
                     </Button>
                 </StackPanel>
             </Grid>
@@ -43,14 +46,14 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Icon -->
-                        <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{StaticResource HighlightAccentBrush}" VerticalAlignment="Center" Visibility="Collapsed" x:Name="FolderIcon"/>
-                        <fa:ImageAwesome Icon="FileOutline" Width="12" Foreground="{StaticResource TextDimBrush}" VerticalAlignment="Center" x:Name="FileIcon"/>
+                        <fa:ImageAwesome Icon="Folder" Width="12" Foreground="{DynamicResource HighlightAccentBrush}" VerticalAlignment="Center" Visibility="Collapsed" x:Name="FolderIcon"/>
+                        <fa:ImageAwesome Icon="FileOutline" Width="12" Foreground="{DynamicResource TextDimBrush}" VerticalAlignment="Center" x:Name="FileIcon"/>
 
                         <!-- Name -->
-                        <TextBlock Grid.Column="1" Text="{Binding Name}" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="5,0" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Name}" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" Margin="5,0" FontSize="12" TextTrimming="CharacterEllipsis"/>
                         
                         <!-- Size -->
-                        <TextBlock Grid.Column="2" Text="{Binding Size}" Foreground="{StaticResource TextDimBrush}" FontSize="10" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="{Binding Size}" Foreground="{DynamicResource TextDimBrush}" FontSize="10" VerticalAlignment="Center"/>
                     </Grid>
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding IsDirectory}" Value="True">
@@ -69,14 +72,14 @@
 
         <ProgressBar Grid.Row="1" VerticalAlignment="Top" Height="2" IsIndeterminate="True" 
                       Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                      Foreground="{StaticResource PrimaryAccentBrush}" Background="Transparent" BorderThickness="0"/>
+                      Foreground="{DynamicResource PrimaryAccentBrush}" Background="Transparent" BorderThickness="0"/>
 
-        <Border Grid.Row="1" VerticalAlignment="Bottom" Background="{StaticResource SidebarBrush}" 
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10,5"
+        <Border Grid.Row="1" VerticalAlignment="Bottom" Background="{DynamicResource SidebarBrush}" 
+                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10,5"
                 Visibility="{Binding IsTransferring, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel>
-                <TextBlock Text="Transferring files..." FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,0,0,5"/>
-                <ProgressBar Value="{Binding TransferProgress}" Height="4" Foreground="{StaticResource HighlightAccentBrush}" Background="#1AFFFFFF" BorderThickness="0"/>
+                <TextBlock Text="Transferring files..." FontSize="10" Foreground="{DynamicResource TextDimBrush}" Margin="0,0,0,5"/>
+                <ProgressBar Value="{Binding TransferProgress}" Height="4" Foreground="{DynamicResource HighlightAccentBrush}" Background="#1AFFFFFF" BorderThickness="0"/>
             </StackPanel>
         </Border>
     </Grid>

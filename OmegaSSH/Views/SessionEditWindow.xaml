@@ -8,8 +8,8 @@
         Title="Connection Editor" MinHeight="500" MinWidth="400"
         Height="550" Width="450"
         WindowStartupLocation="CenterOwner"
-        Background="{StaticResource BgBrush}"
-        Foreground="{StaticResource TextBrush}"
+        Background="{DynamicResource BgBrush}"
+        Foreground="{DynamicResource TextBrush}"
         WindowStyle="None"
         AllowsTransparency="True"
         x:Name="ThisWindow">
@@ -18,7 +18,7 @@
         <WindowChrome CaptionHeight="40" GlassFrameThickness="0" CornerRadius="0" ResizeBorderThickness="8"/>
     </WindowChrome.WindowChrome>
     
-    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="10">
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10">
         <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -28,7 +28,7 @@
 
             <!-- Header -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <fa:ImageAwesome Icon="PlusSquare" Width="20" Foreground="{StaticResource SecondaryAccentBrush}" Margin="0,0,12,0"/>
+                <fa:ImageAwesome Icon="PlusSquare" Width="20" Foreground="{DynamicResource SecondaryAccentBrush}" Margin="0,0,12,0"/>
                 <TextBlock Text="CONNECTION EDITOR" FontSize="18" FontWeight="Bold"/>
             </StackPanel>
 
@@ -45,7 +45,7 @@
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter TargetName="Border" Property="Background" Value="#1AFFFFFF"/>
-                                            <Setter Property="Foreground" Value="{StaticResource PrimaryAccentBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryAccentBrush}"/>
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="Border" Property="Background" Value="#0DFFFFFF"/>
@@ -95,7 +95,7 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBox Text="{Binding PrivateKeyPath}" Style="{StaticResource ModernTextBox}" IsReadOnly="True" Opacity="0.7"/>
                                 <Button Grid.Column="1" Style="{StaticResource IconButton}" Command="{Binding BrowseKeyCommand}" Margin="5,0,0,0">
-                                    <fa:ImageAwesome Icon="FolderOpen" Width="14" Foreground="{StaticResource TextDimBrush}"/>
+                                    <fa:ImageAwesome Icon="FolderOpen" Width="14" Foreground="{DynamicResource TextDimBrush}"/>
                                 </Button>
                             </Grid>
                         </StackPanel>
@@ -126,11 +126,11 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="L:" Foreground="{StaticResource PrimaryAccentBrush}" FontWeight="Bold"/>
+                                                <TextBlock Text="L:" Foreground="{DynamicResource PrimaryAccentBrush}" FontWeight="Bold"/>
                                                 <TextBox Text="{Binding LocalPort}" Width="50" Margin="5,0,10,0" Style="{StaticResource ModernTextBox}" Padding="2"/>
-                                                <TextBlock Text="→" Foreground="{StaticResource TextDimBrush}"/>
+                                                <TextBlock Text="→" Foreground="{DynamicResource TextDimBrush}"/>
                                                 <TextBox Text="{Binding RemoteHost}" Width="100" Margin="10,0,5,0" Style="{StaticResource ModernTextBox}" Padding="2"/>
-                                                <TextBlock Text=":" Foreground="{StaticResource TextDimBrush}"/>
+                                                <TextBlock Text=":" Foreground="{DynamicResource TextDimBrush}"/>
                                                 <TextBox Text="{Binding RemotePort}" Width="50" Margin="5,0,0,0" Style="{StaticResource ModernTextBox}" Padding="2"/>
                                             </StackPanel>
                                             <Button Grid.Column="1" Style="{StaticResource IconButton}" 
@@ -150,9 +150,9 @@
                     <StackPanel Margin="0,20,0,0">
                         <Border Background="#0DFFFFFF" Padding="15" CornerRadius="8">
                             <StackPanel>
-                                <TextBlock Text="SSH FEATURES" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryAccentBrush}" Margin="0,0,0,10"/>
-                                <CheckBox IsChecked="{Binding AgentForwarding}" Content="Enable SSH Agent Forwarding" Foreground="{StaticResource TextBrush}" Margin="0,5,0,0"/>
-                                <TextBlock Text="Allows using your local SSH keys on the remote server." FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="20,5,0,0"/>
+                                <TextBlock Text="SSH FEATURES" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource PrimaryAccentBrush}" Margin="0,0,0,10"/>
+                                <CheckBox IsChecked="{Binding AgentForwarding}" Content="Enable SSH Agent Forwarding" Foreground="{DynamicResource TextBrush}" Margin="0,5,0,0"/>
+                                <TextBlock Text="Allows using your local SSH keys on the remote server." FontSize="10" Foreground="{DynamicResource TextDimBrush}" Margin="20,5,0,0"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -162,7 +162,7 @@
             <!-- Actions -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                 <Button Content="CANCEL" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=ThisWindow}" 
-                        Background="Transparent" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="15,8" Margin="0,0,10,0"/>
+                        Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="15,8" Margin="0,0,10,0"/>
                 <Button Content="SAVE CONNECTION" Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=ThisWindow}" 
                         Style="{StaticResource ModernButton}"/>
             </StackPanel>

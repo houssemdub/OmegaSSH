@@ -10,6 +10,7 @@ namespace OmegaSSH.ViewModels;
 
 public partial class TerminalPaneViewModel : ObservableObject, IDisposable
 {
+    public IShellEngine Engine => _engine;
     private readonly IShellEngine _engine;
     private readonly ISessionLogger _logger;
     private readonly SessionModel? _session;
@@ -75,12 +76,25 @@ public partial class TerminalPaneViewModel : ObservableObject, IDisposable
     }
 
     public event Action<string>? DataReceived;
+    public event Action<int>? SearchResultFound;
 
     private void OnDataReceived(string data)
     {
         lock (_outputBuffer)
         {
             _outputBuffer.Append(data);
+        }
+    }
+
+    public void Search(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return;
+        
+        // Simple search in the visible buffer
+        var index = TerminalOutput.LastIndexOf(text, StringComparison.OrdinalIgnoreCase);
+        if (index >= 0)
+        {
+            SearchResultFound?.Invoke(index);
         }
     }
 
@@ -109,6 +123,13 @@ public partial class TerminalPaneViewModel : ObservableObject, IDisposable
     private async Task SendInput(string input)
     {
         await _engine.WriteAsync(input);
+    }
+
+    [RelayCommand]
+    private async Task Interrupt()
+    {
+        // Send Ctrl+C (ETX - End of Text) signal
+        await _engine.WriteAsync("\x03");
     }
 
     public void Dispose()

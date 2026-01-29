@@ -1,4 +1,4 @@
-# ⚡ OmegaSSH v1.2.0-Alpha
+# ⚡ OmegaSSH v1.3.0-Alpha
 
 **OmegaSSH** is a high-performance, premium SSH terminal and toolchain built for the modern era. Designed with a "Corporate Cyberpunk" aesthetic, it combines the power of raw SSH/SFTP with a seamless, resilient user experience and advanced command orchestration.
 
@@ -14,16 +14,20 @@
 - **Broadcast Mode**: Mirror real-time input to all active terminal tabs.
 - **Key Manager**: Generate, export, and manage SSH keys (RSA/Ed25519) in a secure environment.
 
-### 🎨 User Interface (Corporate Cyberpunk)
-- **Fluid Layout**: Resizable sidebar with GridSplitter and adaptive window scaling using WindowChrome.
-- **Dynamic Theme Engine**: Select from **Dracula**, **Nord**, **Monokai**, **CyberNeon**, and **Retro** using dedicated "Theme Orbs".
-- **Glassmorphism UI**: Premium Translucent interfaces with smooth gradients, glow effects, and subtle animations.
-- **Liquid Scrollbars**: Integrated, ultra-thin scrollbars that expand and highlight on interaction.
+### 🧠 Smart Interface & Productivity
+- **Workspace Persistence**: Remembers your preferred sidebar, snippets panel, and status bar visibility across sessions.
+- **Smart Shortcuts**:
+    - `Ctrl + C`: Context-aware - Copies selected text or sends an **Interrupt Signal** to stop running processes (like `ping`).
+    - `Ctrl + V`: High-speed Paste directly into the terminal stream.
+    - `Ctrl + L`: Instant terminal clear.
+- **Improved ANSI Engine**: Advanced support for interactive Prompts (Alpine Linux, busybox) and escape sequences.
+- **Zen Mode**: Instant distraction-free workspace that intelligently restores your previous layout when disabled.
 
-### ⚙️ Full Settings Menu
-- **Terminal Customization**: Change font families (Consolas, Cascadia, etc.) and font sizes.
-- **Global Preferences**: Configure auto-connection, keep-alive intervals, and custom session logging paths.
-- **ANSI Engine**: Full support for 256 ANSI colors with batch-processing performance.
+### 🎨 User Interface (Corporate Cyberpunk)
+- **Fluid Layout**: Resizable sidebar and adaptive window scaling using WindowChrome.
+- **Instant Theme Engine**: Select from **Dracula**, **Nord**, **Monokai**, **CyberNeon**, and **Retro**. Themes now apply instantly across all windows without visual lag.
+- **Glassmorphism UI**: Premium translucent interfaces with smooth gradients, glow effects, and subtle animations.
+- **Liquid Scrollbars**: Integrated, ultra-thin scrollbars that expand and highlight on interaction.
 
 ---
 
@@ -31,7 +35,7 @@
 - **Platform**: .NET 8.0 WPF
 - **Architecture**: MVVM (CommunityToolkit.Mvvm)
 - **Protocols**: SSH.NET (SSH, SFTP, Port Forwarding)
-- **Rendering**: Custom ANSI-to-WPF Parser with high-performance buffering.
+- **Rendering**: Enhanced ANSI-to-WPF Parser with device-status filtering and screen clearing logic.
 
 ---
 
@@ -43,6 +47,7 @@
 ---
 
 ## 📜 Version History
+- **v1.3.0-Alpha**: "The Smart Overhaul" - Smart layout persistence, context-aware shortcuts (Ctrl+C/V/L), improved Alpine Linux prompt compatibility, and instant theme switching.
 - **v1.2.0-Alpha**: "The Orchestration Update" - Local Shell support, Multi-Commander, Broadcast Mode, and a complete UI overhaul with Corporate Cyberpunk aesthetics.
 - **v1.1.0-Stable**: Added resizable sidebar, complete Session Manager, and full Settings Menu.
 - **v1.0.0-Beta**: Initial Release - Architecture Foundation, SSH core, and Theme Engine.

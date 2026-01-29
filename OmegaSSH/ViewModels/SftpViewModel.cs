@@ -86,6 +86,24 @@ public partial class SftpViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task NavigateUpAsync()
+    {
+        if (CurrentPath == "/" || CurrentPath == ".") return;
+        
+        var normalized = CurrentPath.TrimEnd('/');
+        var lastSlash = normalized.LastIndexOf('/');
+        if (lastSlash > 0)
+        {
+            CurrentPath = normalized.Substring(0, lastSlash);
+        }
+        else
+        {
+            CurrentPath = "/";
+        }
+        await RefreshAsync();
+    }
+
+    [RelayCommand]
     public async Task NavigateAsync(SftpEntryModel? entry)
     {
         if (entry == null || !entry.IsDirectory) return;
@@ -94,29 +112,12 @@ public partial class SftpViewModel : ObservableObject
 
         if (entry.Name == "..")
         {
-            if (CurrentPath == "/" || CurrentPath == ".")
-            {
-                CurrentPath = "/";
-            }
-            else
-            {
-                var normalized = CurrentPath.TrimEnd('/');
-                var lastSlash = normalized.LastIndexOf('/');
-                if (lastSlash > 0)
-                {
-                    CurrentPath = normalized.Substring(0, lastSlash);
-                }
-                else
-                {
-                    CurrentPath = "/";
-                }
-            }
+            await NavigateUpAsync();
         }
         else
         {
             CurrentPath = entry.FullPath;
+            await RefreshAsync();
         }
-
-        await RefreshAsync();
     }
 }
