@@ -38,7 +38,7 @@
         </Border>
 
         <!-- FLOATING TOOLBAR -->
-        <Border Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="30,25" Background="{DynamicResource SurfaceBrush}" CornerRadius="12" Padding="8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Opacity="0.4">
+        <Border Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="30,25" Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource MainCornerRadius}" Padding="8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Opacity="0.4">
             <Border.Style>
                 <Style TargetType="Border">
                     <Style.Triggers>
@@ -69,7 +69,7 @@
                 </ToggleButton>
 
                 <Popup IsOpen="{Binding IsChecked, ElementName=TunnelButton}" PlacementTarget="{Binding ElementName=TunnelButton}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
-                    <Border Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="15" Width="300">
+                    <Border Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource MainCornerRadius}" Padding="15" Width="300">
                         <StackPanel>
                             <TextBlock Text="PORT FORWARDING" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource PrimaryAccentBrush}" Margin="0,0,0,15"/>
                             <ItemsControl ItemsSource="{Binding Tunnels}">
@@ -105,7 +105,7 @@
 
         <!-- SEARCH OVERLAY -->
         <Border Grid.Column="0" x:Name="SearchOverlay" VerticalAlignment="Top" HorizontalAlignment="Right" 
-                Background="{DynamicResource SurfaceBrush}" CornerRadius="12" 
+                Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource MainCornerRadius}" 
                 BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
                 Visibility="Collapsed" Padding="15,10" Panel.ZIndex="100" Margin="0,80,30,0">
             <StackPanel Orientation="Horizontal">

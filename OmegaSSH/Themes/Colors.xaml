@@ -53,4 +53,9 @@
         <GradientStop Color="#11FFFFFF" Offset="1"/>
     </LinearGradientBrush>
     
+    <!-- UI TOKENS -->
+    <CornerRadius x:Key="MainCornerRadius">12</CornerRadius>
+    <FontFamily x:Key="MainFontFamily">Segoe UI</FontFamily>
+    <SolidColorBrush x:Key="TitleBarBrush" Color="{StaticResource SidebarColor}"/>
+    
 </ResourceDictionary>

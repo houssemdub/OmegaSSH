@@ -399,7 +399,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ContextMenu">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource MainCornerRadius}">
                         <ItemsPresenter Margin="5"/>
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="25" Opacity="0.6" ShadowDepth="0" Color="Black"/>

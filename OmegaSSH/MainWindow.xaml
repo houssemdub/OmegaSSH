@@ -14,7 +14,8 @@
         Foreground="{DynamicResource TextBrush}"
         WindowStyle="None"
         AllowsTransparency="True"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
 
     <Window.Resources>
         <infra:BindingProxy x:Key="MainProxy" Data="{Binding}"/>
@@ -30,7 +31,7 @@
         <WindowChrome CaptionHeight="72" GlassFrameThickness="0" CornerRadius="0" ResizeBorderThickness="8"/>
     </WindowChrome.WindowChrome>
 
-    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource BgBrush}" CornerRadius="12">
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource BgBrush}" CornerRadius="{DynamicResource MainCornerRadius}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/> <!-- Global Header (Title + Menu) -->
@@ -39,7 +40,7 @@
             </Grid.RowDefinitions>
 
             <!-- PREMIUM HEADER -->
-            <Border Grid.Row="0" Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
+            <Border Grid.Row="0" Background="{DynamicResource TitleBarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" CornerRadius="{DynamicResource MainCornerRadius}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
@@ -54,8 +55,8 @@
                                     <DropShadowEffect BlurRadius="10" Color="{DynamicResource AccentColor}" Opacity="0.5" ShadowDepth="0"/>
                                 </fa:ImageAwesome.Effect>
                             </fa:ImageAwesome>
-                            <TextBlock Text="OMEGA" FontFamily="Segoe UI" FontWeight="Light" FontSize="14" VerticalAlignment="Center" Opacity="0.7" Foreground="{DynamicResource TextBrush}"/>
-                            <TextBlock Text="SSH" FontFamily="Segoe UI" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryAccentBrush}"/>
+                            <TextBlock Text="OMEGA" FontFamily="{DynamicResource MainFontFamily}" FontWeight="Light" FontSize="14" VerticalAlignment="Center" Opacity="0.7" Foreground="{DynamicResource TextBrush}"/>
+                            <TextBlock Text="SSH" FontFamily="{DynamicResource MainFontFamily}" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryAccentBrush}"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True" Margin="0,0,5,0" VerticalAlignment="Top">
@@ -254,10 +255,16 @@
                                     </Button>
                                     <Border Width="1" Background="{DynamicResource BorderBrush}" Margin="8,4"/>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <Button Background="#282A36" ToolTip="Dracula" Command="{Binding ChangeThemeCommand}" CommandParameter="dracula" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0"/>
-                                        <Button Background="#2E3440" ToolTip="Nord" Command="{Binding ChangeThemeCommand}" CommandParameter="nord" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0"/>
-                                        <Button Background="#0A0E1A" ToolTip="CyberNeon" Command="{Binding ChangeThemeCommand}" CommandParameter="cyberneon" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0"/>
-                                        <Button Background="#000000" ToolTip="Retro" Command="{Binding ChangeThemeCommand}" CommandParameter="retro" Style="{StaticResource RoundThemeButton}"/>
+                                        <Button Background="#58A6FF" ToolTip="OmegaSSH" Command="{Binding ChangeThemeCommand}" CommandParameter="omegassh" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0"/>
+                                        <Button Background="#1C1C1C" ToolTip="MobaXterm" Command="{Binding ChangeThemeCommand}" CommandParameter="mobaxtrem" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0">
+                                            <fa:ImageAwesome Icon="Terminal" Width="8" Foreground="#00A2E8"/>
+                                        </Button>
+                                        <Button Background="#0D1117" ToolTip="GitHub Dark" Command="{Binding ChangeThemeCommand}" CommandParameter="github" Style="{StaticResource RoundThemeButton}" Margin="0,0,5,0">
+                                            <fa:ImageAwesome Icon="Github" Width="8" Foreground="White"/>
+                                        </Button>
+                                        <Button Background="#0055E1" ToolTip="WinXP Luna" Command="{Binding ChangeThemeCommand}" CommandParameter="winxp" Style="{StaticResource RoundThemeButton}">
+                                            <fa:ImageAwesome Icon="Windows" Width="8" Foreground="#3B913B"/>
+                                        </Button>
                                     </StackPanel>
                                 </StackPanel>
                             </Grid>
@@ -273,7 +280,7 @@
                     </Grid.RowDefinitions>
 
                     <!-- QUICK ACTION HEADER -->
-                    <Border Grid.Row="0" Margin="20,15" Background="{DynamicResource SurfaceBrush}" CornerRadius="12" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+                    <Border Grid.Row="0" Margin="20,15" Background="{DynamicResource SurfaceBrush}" CornerRadius="{DynamicResource MainCornerRadius}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
                         <Grid Margin="15,8">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <fa:ImageAwesome Icon="Bolt" Width="12" Foreground="{DynamicResource HighlightAccentBrush}" Margin="0,0,12,0"/>
